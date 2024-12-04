@@ -8,11 +8,13 @@ public class SkinPackGen {
     private ArrayList<HashMap<String, String>> skins;
     private String name;
     private String namePref;
+    private ArrayList<String> skinNames;
     public SkinPackGen(ArrayList<HashMap<String, String>> skins, String name) {
         this.skins = skins;
         this.name = name;
 
-        this.namePref = "RF_mcs_nr_" + name.replaceAll("\\s", "_").substring(0, 3);
+        this.namePref = "RF_mcs__nr_" + name.replaceAll("\\s", "_").substring(0, 3);
+        this.skinNames = new ArrayList<>();
     }
     public String genSkinsJSON() {
         StringBuilder skinsJSON = new StringBuilder();
@@ -36,6 +38,8 @@ public class SkinPackGen {
                                 appendStatement("\t\t\t","localization_name",
                                         skin.get(key).toLowerCase().replaceAll("\\s", "_"))
                         ).append(",\n");
+
+                        skinNames.add(skin.get(key));
                         break;
                     case "geo":
                         String geo;
@@ -89,6 +93,16 @@ public class SkinPackGen {
         skinsJSON.append("}");
 
         return skinsJSON.toString();
+    }
+    public String genDefLangFile() {
+        StringBuilder langFile = new StringBuilder();
+
+        langFile.append("skinpack." + namePref + "=" + name).append("\n");
+        for (String skinName : skinNames) {
+            langFile.append("skin." + namePref + "." + skinName.toLowerCase().replaceAll("\\s", "_") + "=" + skinName).append("\n");
+        }
+
+        return langFile.toString();
     }
 
     //json gen

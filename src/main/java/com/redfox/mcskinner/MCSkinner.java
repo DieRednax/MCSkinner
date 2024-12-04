@@ -14,7 +14,12 @@ public class MCSkinner {
         test.add(testSkin);
         test.add(testSkin);
 
-        String json = new SkinPackGen(test,"test").genSkinsJSON();
-        System.out.println(json);
+        SkinPackGen testPackGen = new SkinPackGen(test,"test");
+
+        String json = testPackGen.genSkinsJSON();
+        System.out.println("skins.json: \n" + json + "\n");
+
+        String lang = testPackGen.genDefLangFile();
+        System.out.println("en_US.lang: \n" + lang);
     }
 }
