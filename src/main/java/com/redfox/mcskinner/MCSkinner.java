@@ -14,7 +14,7 @@ public class MCSkinner {
         test.add(testSkin);
         test.add(testSkin);
 
-        SkinPackGen testPackGen = new SkinPackGen(test,"test");
+        SkinPackGen testPackGen = new SkinPackGen(test,"test s_1", "src\\main\\resources\\test");
 
         String json = testPackGen.genSkinsJSON();
         System.out.println("skins.json: \n" + json + "\n");
@@ -24,5 +24,8 @@ public class MCSkinner {
 
         String langJSON = testPackGen.genLangJSON();
         System.out.println("languages.json: \n" + langJSON);
+
+        testPackGen.genSkinPackFiles();
+
     }
 }

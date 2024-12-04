@@ -1,20 +1,35 @@
 package com.redfox.mcskinner;
 
-import java.io.File;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class SkinPackGen {
     private ArrayList<HashMap<String, String>> skins;
     private String name;
+    private String genDirectory;
     private String namePref;
     private ArrayList<String> skinNames;
-    public SkinPackGen(ArrayList<HashMap<String, String>> skins, String name) {
+    public SkinPackGen(ArrayList<HashMap<String, String>> skins, String name, String genDirectory) {
         this.skins = skins;
         this.name = name;
+        this.genDirectory = genDirectory;
 
         this.namePref = "RF_mcs__nr_" + name.replaceAll("\\s", "_").substring(0, 3);
         this.skinNames = new ArrayList<>();
+    }
+    public void genSkinPackFiles() {
+        String skinsJSON = genSkinsJSON();
+        String langJSON = genLangJSON();
+        String defLang = genDefLangFile();
+
+        File skinsJSONF = new File(genDirectory + "/" + name + "/skins.json");
+        File langJSONF = new File(genDirectory + "/" + name + "/texts/languages.json");
+        File defLangF = new File(genDirectory + "/" + name + "/texts/en_US.lang");
+
+        writeFile(skinsJSON, skinsJSONF);
+        writeFile(langJSON, langJSONF);
+        writeFile(defLang, defLangF);
     }
     public String genSkinsJSON() {
         StringBuilder skinsJSON = new StringBuilder();
@@ -109,6 +124,19 @@ public class SkinPackGen {
                 [
                 \t"en_US"
                 ]""";
+    }
+
+    private void writeFile(String input, File file) {
+        File parentDirectory = file.getParentFile();
+        if (parentDirectory != null && !parentDirectory.exists()) {
+            parentDirectory.mkdirs();
+        }
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
+            bw.write(input);
+        } catch (IOException e) {
+            System.err.println("Error writing to file " + file + ": " + e.getMessage());
+        }
     }
 
     //json gen
