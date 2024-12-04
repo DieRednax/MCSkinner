@@ -20,6 +20,9 @@ public class MCSkinner {
         System.out.println("skins.json: \n" + json + "\n");
 
         String lang = testPackGen.genDefLangFile();
-        System.out.println("en_US.lang: \n" + lang);
+        System.out.println("en_US.lang: \n" + lang + "\n");
+
+        String langJSON = testPackGen.genLangJSON();
+        System.out.println("languages.json: \n" + langJSON);
     }
 }

@@ -104,6 +104,12 @@ public class SkinPackGen {
 
         return langFile.toString();
     }
+    public String genLangJSON() {
+        return """
+                [
+                \t"en_US"
+                ]""";
+    }
 
     //json gen
     private String appendStatement( String tabsPref, String left, String right) {
