@@ -3,16 +3,27 @@ package com.redfox.mcskinner;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 public class SkinPackGen {
     private ArrayList<HashMap<String, String>> skins;
     private String name;
+    private String author;
+    private String description;
+    private String version;
+    private String mcVersion;
     private String genDirectory;
     private String namePref;
     private ArrayList<String> skinNames;
-    public SkinPackGen(ArrayList<HashMap<String, String>> skins, String name, String genDirectory) {
+    public SkinPackGen(ArrayList<HashMap<String, String>> skins,
+                       String name, String author, String description, String version, String mcVersion,
+                       String genDirectory) {
         this.skins = skins;
         this.name = name;
+        this.author = author;
+        this.description = description;
+        this.version = version;
+        this.mcVersion = mcVersion;
         this.genDirectory = genDirectory;
 
         this.namePref = "RF_mcs__nr_" + name.replaceAll("\\s", "_").substring(0, 3);
@@ -22,14 +33,53 @@ public class SkinPackGen {
         String skinsJSON = genSkinsJSON();
         String langJSON = genLangJSON();
         String defLang = genDefLangFile();
+        String manifestJSON = genManifestJSON();
 
         File skinsJSONF = new File(genDirectory + "/" + name + "/skins.json");
         File langJSONF = new File(genDirectory + "/" + name + "/texts/languages.json");
         File defLangF = new File(genDirectory + "/" + name + "/texts/en_US.lang");
+        File manifestJSONF = new File(genDirectory + "/" + name + "/manifest.json");
 
         writeFile(skinsJSON, skinsJSONF);
         writeFile(langJSON, langJSONF);
         writeFile(defLang, defLangF);
+        writeFile(manifestJSON, manifestJSONF);
+    }
+    public String genManifestJSON() {
+        StringBuilder manifestJSON = new StringBuilder();
+        manifestJSON.append("{\n");
+
+        manifestJSON.append(
+                        "\t\"format_version\": 2,\n" +
+                        "\t\"metadata\": {\n" +
+                        "\t\t\"authors\": [\n" +
+                        "\t\t\t\"MCSkinner user: " + author + "\"\n" +
+                        "\t\t],\n" +
+                        "\t\t\"generated_with\": {\n" +
+                        "\t\t\t\"MCSkinner\": [\n" +
+                        "\t\t\t\t\"Made by RedFox\"\n" +
+                        "\t\t\t]\n" +
+                        "\t\t}\n" +
+                        "\t},\n" +
+                        "\t\"header\": {\n" +
+                        "\t\t\"name\": \"" + name + "\",\n" +
+                        "\t\t\"description\": \"" + description + " - generated with MCSkinner (by RedFox)\",\n" +
+                        "\t\t\"min_engine_version\": [" + mcVersion + "],\n" +
+                        "\t\t\"uuid\": \"" + UUID.randomUUID() + "\",\n" +
+                        "\t\t\"version\": [" + version + "]\n" +
+                        "\t},\n" +
+                        "\t\"modules\": [\n" +
+                        "\t\t{\n" +
+                        "\t\t\t\"type\": \"skin_pack\",\n" +
+                        "\t\t\t\"uuid\": \"" + UUID.randomUUID() + "\",\n" +
+                        "\t\t\t\"version\": [" + version + "]\n" +
+                        "\t\t}\n" +
+                        "\t]\n"
+        );
+
+        manifestJSON.append("}");
+
+        return manifestJSON.toString();
     }
     public String genSkinsJSON() {
         StringBuilder skinsJSON = new StringBuilder();
@@ -142,5 +192,8 @@ public class SkinPackGen {
     //json gen
     private String appendStatement( String tabsPref, String left, String right) {
         return tabsPref + "\"" + left + "\": \"" + right + "\"";
+    }
+    private <T> String appendStatementRightNonSTR(String tabsPref, String left, T right) {
+        return tabsPref + "\"" + left + "\": " + right;
     }
 }
