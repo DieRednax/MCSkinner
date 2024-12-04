@@ -7,24 +7,33 @@ import java.util.HashMap;
 public class SkinPackGen {
     private ArrayList<HashMap<String, String>> skins;
     private String name;
+    private String namePref;
     public SkinPackGen(ArrayList<HashMap<String, String>> skins, String name) {
         this.skins = skins;
         this.name = name;
+
+        this.namePref = "RF_mcs_nr_" + name.replaceAll("\\s", "_").substring(0, 3);
     }
     public String genSkinsJSON() {
         StringBuilder skinsJSON = new StringBuilder();
-        skinsJSON.append("[\n");
+        int cursor = 0;
 
+        skinsJSON.append("{\n");
+        skinsJSON.append(
+                appendStatement("\t", "geometry", "skinpacks/skins.json")
+        ).append(",\n");
+
+        skinsJSON.append("\t\"skins\": [\n");
         for (HashMap<String, String> skin : skins) {
-            skinsJSON.append("\t{\n");
+            cursor++;
 
-            int cursor = 0;
+            skinsJSON.append("\t\t{\n");
+
             for (String key : skin.keySet()) {
-                cursor++;
                 switch (key) {
                     case "name":
                         skinsJSON.append(
-                                appendStatement("localization_name",
+                                appendStatement("\t\t\t","localization_name",
                                         skin.get(key).toLowerCase().replaceAll("\\s", "_"))
                         ).append(",\n");
                         break;
@@ -38,12 +47,12 @@ public class SkinPackGen {
                         } else geo = skin.get(key);
 
                         skinsJSON.append(
-                                appendStatement("geometry", geo)
+                                appendStatement("\t\t\t","geometry", geo)
                         ).append(",\n");
                         break;
                     case "texture":
                         skinsJSON.append(
-                                appendStatement("texture",
+                                appendStatement("\t\t\t","texture",
                                         skin.get(key).replace(new File(skin.get(key)).getParent(), "")
                                                 .replace("/", "")
                                                 .replace("\\", ""))
@@ -51,34 +60,39 @@ public class SkinPackGen {
                         break;
                     case "cape":
                         skinsJSON.append(
-                                appendStatement("cape",
+                                appendStatement("\t\t\t","cape",
                                         skin.get(key).replace(new File(skin.get(key)).getParent(), "")
                                                 .replace("/", "")
                                                 .replace("\\", ""))
                         ).append(",\n");
                         break;
                 }
-
-//                if (cursor < skin.keySet().size()) {
-//                    skinsJSON.append(",\n");
-//                } else if (cursor == skin.keySet().size()) {
-//                    skinsJSON.append("\n");
-//                }
             }
             skinsJSON.append(
-                    appendStatement("type", "free")
+                    appendStatement("\t\t\t","type", "free")
             ).append("\n");
+
+            if (cursor < skins.size()) {
+                skinsJSON.append("\t\t},\n");
+            } else if (cursor == skins.size()) {
+                skinsJSON.append("\t\t}\n");
+            }
         }
+        skinsJSON.append("\t],\n");
 
-        skinsJSON.append("\t},\n");
-
-        skinsJSON.append("]");
+        skinsJSON.append(
+                appendStatement("\t", "serialize_name", namePref)
+        ).append(",\n");
+        skinsJSON.append(
+                appendStatement("\t", "localization_name", namePref)
+        ).append("\n");
+        skinsJSON.append("}");
 
         return skinsJSON.toString();
     }
 
     //json gen
-    private String appendStatement(String left, String right) {
-        return "\t\t\"" + left + "\": \"" + right + "\"";
+    private String appendStatement( String tabsPref, String left, String right) {
+        return tabsPref + "\"" + left + "\": \"" + right + "\"";
     }
 }

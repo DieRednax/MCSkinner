@@ -12,6 +12,7 @@ public class MCSkinner {
             testSkin.put("cape", "C:\\Users\\<user>\\OneDrive\\Minecraft\\Resource packs\\Custom Capes By BionicBen.zip\\Custom Capes By BionicBen\\Bee.png"); //replace <user>
         ArrayList<HashMap<String, String>> test = new ArrayList<>();
         test.add(testSkin);
+        test.add(testSkin);
 
         String json = new SkinPackGen(test,"test").genSkinsJSON();
         System.out.println(json);
