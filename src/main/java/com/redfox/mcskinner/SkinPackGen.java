@@ -1,6 +1,10 @@
 package com.redfox.mcskinner;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
@@ -15,6 +19,7 @@ public class SkinPackGen {
     private String genDirectory;
     private String namePref;
     private ArrayList<String> skinNames;
+    private ArrayList<String> images;
     public SkinPackGen(ArrayList<HashMap<String, String>> skins,
                        String name, String author, String description, String version, String mcVersion,
                        String genDirectory) {
@@ -28,6 +33,7 @@ public class SkinPackGen {
 
         this.namePref = "RF_mcs__nr_" + name.replaceAll("\\s", "_").substring(0, 3);
         this.skinNames = new ArrayList<>();
+        this.images = new ArrayList<>();
     }
     public void genSkinPackFiles() {
         String skinsJSON = genSkinsJSON();
@@ -44,6 +50,13 @@ public class SkinPackGen {
         writeFile(langJSON, langJSONF);
         writeFile(defLang, defLangF);
         writeFile(manifestJSON, manifestJSONF);
+
+        for (String image : images) {
+            Path sourcePath = Paths.get(image);
+            Path destinationPath = Paths.get(genDirectory + "/" + name) ;
+
+            copyFile(sourcePath, destinationPath);
+        }
     }
     public String genManifestJSON() {
         StringBuilder manifestJSON = new StringBuilder();
@@ -126,6 +139,8 @@ public class SkinPackGen {
                                                 .replace("/", "")
                                                 .replace("\\", ""))
                         ).append(",\n");
+
+                        images.add(skin.get(key));
                         break;
                     case "cape":
                         skinsJSON.append(
@@ -134,6 +149,8 @@ public class SkinPackGen {
                                                 .replace("/", "")
                                                 .replace("\\", ""))
                         ).append(",\n");
+
+                        images.add(skin.get(key));
                         break;
                 }
             }
@@ -186,6 +203,14 @@ public class SkinPackGen {
             bw.write(input);
         } catch (IOException e) {
             System.err.println("Error writing to file " + file + ": " + e.getMessage());
+        }
+    }
+    private void copyFile(Path sourcePath, Path destinationPath) {
+        try {
+            Files.copy(sourcePath, destinationPath.resolve(sourcePath.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            System.err.println("Error copying file " + sourcePath + " to destination " + destinationPath + ": " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
