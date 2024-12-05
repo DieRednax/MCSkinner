@@ -1,10 +1,16 @@
 package com.redfox.mcskinner;
 
+import com.redfox.mcskinner.ui.MainFrame;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MCSkinner {
     public static void main(String[] args) {
+
+        new MainFrame();
+
+        /*
         HashMap<String, String> testSkin = new HashMap<>();
             testSkin.put("name", "test Skin");
             testSkin.put("geo", "classic");
@@ -29,8 +35,8 @@ public class MCSkinner {
 
         String manifestJSON = testPackGen.genManifestJSON();
         System.out.println("manifest.json: \n" + manifestJSON);
-
         testPackGen.genSkinPackFiles();
+*/
 
     }
 }
