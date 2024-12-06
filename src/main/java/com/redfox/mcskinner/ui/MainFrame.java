@@ -39,10 +39,13 @@ public class MainFrame extends JFrame implements ActionListener {
     private JTextField tfFileGenPath = new JTextField();
     private JButton jbSelctFileGenPath = new JButton();
     private JFileChooser fcSelectFileGenPath = new JFileChooser();
+
+    private JPanel jpAddSkin = new JPanel(new BorderLayout(60, 60));
+    private JButton jbAddSkin = new JButton("Add Skin");
     private JPanel jpNewSkinPack = new JPanel(new BorderLayout());
     public MainFrame() {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setSize(700, 400);
+        this.setSize(700, 500);
 //        this.setIconImage(programIcon.getImage());
         this.setTitle("MCSkinner");
         this.setResizable(true);
@@ -53,10 +56,10 @@ public class MainFrame extends JFrame implements ActionListener {
         jbNewSkinPack.addActionListener(this);
         jbNewSkinPack.setPreferredSize(new Dimension(500, 70));
 
-        jpHomePanelN.setPreferredSize(new Dimension(100, 140));
-        jpHomePanelS.setPreferredSize(new Dimension(100, 140));
-        jpHomePanelW.setPreferredSize(new Dimension(100, 140));
-        jpHomePanelE.setPreferredSize(new Dimension(100, 140));
+        jpHomePanelN.setPreferredSize(new Dimension(100, 190));
+        jpHomePanelS.setPreferredSize(new Dimension(100, 190));
+        jpHomePanelW.setPreferredSize(new Dimension(100, 190));
+        jpHomePanelE.setPreferredSize(new Dimension(100, 190));
 
         //testing:
         jpHomePanelN.setBackground(Color.green);
@@ -102,6 +105,13 @@ public class MainFrame extends JFrame implements ActionListener {
         jpCenterGrid.add(jpFileGenPath);
 
         jpCenterGrid.setVisible(true);
+
+        jbAddSkin.addActionListener(this);
+        jpAddSkin.setPreferredSize(new Dimension(50, 70));
+        jpAddSkin.add(jbAddSkin, BorderLayout.CENTER);
+
+        jpNewSkinPack.add(jpAddSkin, BorderLayout.SOUTH);
+
         jpNewSkinPack.add(jpCenterGrid, BorderLayout.CENTER);
 
         cardLayout = new CardLayout(10, 10);
@@ -126,6 +136,10 @@ public class MainFrame extends JFrame implements ActionListener {
                 File selectedFileGenPath = fcSelectFileGenPath.getSelectedFile();
                 tfFileGenPath.setText(selectedFileGenPath.getAbsolutePath());
             }
+        } else if (e.getSource() == jbAddSkin) {
+            new AddSkinFrame();
+        } else if (e.getSource() == AddSkinFrame.jbApply) {
+            System.out.println("jbApply");
         }
     }
 }

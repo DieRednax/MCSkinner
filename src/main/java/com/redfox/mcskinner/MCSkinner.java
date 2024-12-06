@@ -6,9 +6,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MCSkinner {
+    public static MainFrame mainFrame;
     public static void main(String[] args) {
 
-        new MainFrame();
+        mainFrame = new MainFrame();
 
         /*
         HashMap<String, String> testSkin = new HashMap<>();
