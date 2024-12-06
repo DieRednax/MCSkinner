@@ -1,5 +1,7 @@
 package com.redfox.mcskinner.ui;
 
+import com.formdev.flatlaf.*;
+import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import com.redfox.mcskinner.SkinPackGen;
 
 import javax.swing.*;
@@ -14,7 +16,9 @@ public class MainFrame extends JFrame implements ActionListener {
     private ArrayList<HashMap<String, String>> skins = new ArrayList<>();
 
 
-    AddSkinFrame addSkinFrame;
+    private AddSkinFrame addSkinFrame;
+
+    public final ImageIcon openFileIcon = new ImageIcon("src/main/resources/mcskinner/icons/file-open-2-64.png");
 
     private CardLayout cardLayout;
     private Container contentRoot;
@@ -54,13 +58,17 @@ public class MainFrame extends JFrame implements ActionListener {
     private JButton jbApply = new JButton("Generate Skin-Pack");
     private JPanel jpNewSkinPack = new JPanel(new BorderLayout());
     public MainFrame() {
+        String os = System.getProperty("os.name").toLowerCase();
+        if (!(os.contains("mac") || os.contains("darwin"))) {
+            FlatLightLaf.setup();
+        } else FlatMacLightLaf.setup();
+
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setSize(700, 500);
 //        this.setIconImage(programIcon.getImage());
         this.setTitle("MCSkinner");
         this.setResizable(true);
         this.setLocationRelativeTo(null);
-
         contentRoot = this.getContentPane();
 
         jbNewSkinPack.addActionListener(this);
@@ -86,6 +94,8 @@ public class MainFrame extends JFrame implements ActionListener {
         jpMCVersion.add(tfMCVersion3);
 
         jbSelctFileGenPath.addActionListener(this);
+        jbSelctFileGenPath.setIcon(openFileIcon);
+
         jpFileGenPath.add(tfFileGenPath, BorderLayout.CENTER);
         jpFileGenPath.add(jbSelctFileGenPath, BorderLayout.EAST);
 
@@ -138,11 +148,22 @@ public class MainFrame extends JFrame implements ActionListener {
             this.setTitle("MCSkinner: Create new skin-pack");
 
             this.setSize(700, 550);
+
+            SwingUtilities.updateComponentTreeUI(this);
+            this.invalidate();
+            this.validate();
+            this.repaint();
         } else if (e.getSource() == jbSelctFileGenPath) {
+            SwingUtilities.updateComponentTreeUI(fcSelectFileGenPath);
+            fcSelectFileGenPath.invalidate();
+            fcSelectFileGenPath.validate();
+            fcSelectFileGenPath.repaint();
+
             fcSelectFileGenPath.setDialogTitle("MCSkinner: Choose generation directory");
             fcSelectFileGenPath.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            fcSelectFileGenPath.setCurrentDirectory(new File(System.getProperty("user.home")));
 
-            int response = fcSelectFileGenPath.showOpenDialog(null);
+            int response = fcSelectFileGenPath.showOpenDialog(this);
             if (response == JFileChooser.APPROVE_OPTION) {
                 File selectedFileGenPath = fcSelectFileGenPath.getSelectedFile();
                 tfFileGenPath.setText(selectedFileGenPath.getAbsolutePath());
@@ -185,6 +206,11 @@ public class MainFrame extends JFrame implements ActionListener {
             String manifestJSON = skinPackGen.genManifestJSON();
             System.out.println("manifest.json: \n" + manifestJSON);
             skinPackGen.genSkinPackFiles();
+
+            cardLayout.next(contentRoot);
+            this.setTitle("MCSkinner");
+
+            this.setSize(700, 500);
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.redfox.mcskinner.ui;
 
+import com.formdev.flatlaf.FlatLightLaf;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -50,6 +52,9 @@ public class AddSkinFrame extends JFrame implements ActionListener {
         jbSelectTexture.addActionListener(this);
         jbSelectCape.addActionListener(this);
 
+        jbSelectTexture.setIcon(mainFrame.openFileIcon);
+        jbSelectCape.setIcon(mainFrame.openFileIcon);
+
         jpTexture.add(tfTexture, BorderLayout.CENTER);
         jpTexture.add(jbSelectTexture, BorderLayout.EAST);
         jpCenterGrid.add(jlTexture);
@@ -91,8 +96,9 @@ public class AddSkinFrame extends JFrame implements ActionListener {
     }
     public String selectFile(JFileChooser fileSelector, String dialogTitle) {
         fileSelector.setDialogTitle(dialogTitle);
+        fileSelector.setCurrentDirectory(new File(System.getProperty("user.home")));
 
-        int response = fileSelector.showOpenDialog(null);
+        int response = fileSelector.showOpenDialog(this);
         if (response == JFileChooser.APPROVE_OPTION) {
             File selectedFileGenPath = fileSelector.getSelectedFile();
             return selectedFileGenPath.getAbsolutePath();
