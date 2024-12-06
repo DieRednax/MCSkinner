@@ -9,6 +9,9 @@ import java.io.File;
 import static com.redfox.mcskinner.MCSkinner.mainFrame;
 
 public class AddSkinFrame extends JFrame implements ActionListener {
+    public boolean cape = false;
+
+
     private JPanel jpCenterGrid = new JPanel(new GridLayout(3, 2));
     private JLabel jlName = new JLabel("Name: ");
     private JLabel jlGeo = new JLabel("Geometry: ");
@@ -29,7 +32,7 @@ public class AddSkinFrame extends JFrame implements ActionListener {
 
     private JPanel jpLowButtons = new JPanel(new BorderLayout(2, 2));
     private JButton jbAddCape = new JButton("Add Cape");
-    public static JButton jbApply = new JButton("Add Skin");
+    public JButton jbApply = new JButton("Add Skin");
     public AddSkinFrame() {
         this.setSize(500, 300);
 //        this.setIconImage(programIcon.getImage());
@@ -78,6 +81,8 @@ public class AddSkinFrame extends JFrame implements ActionListener {
             jpCape.add(jbSelectCape, BorderLayout.EAST);
             jpCenterGrid.add(jlCape);
             jpCenterGrid.add(jpCape);
+
+            cape = true;
         } else if (e.getSource() == jbSelectTexture) {
             tfTexture.setText(selectFile(fcSelectTexture, "MCSkinner: Select Skin-Texture"));
         } else if (e.getSource() == jbSelectCape) {
@@ -85,10 +90,10 @@ public class AddSkinFrame extends JFrame implements ActionListener {
         }
     }
     public String selectFile(JFileChooser fileSelector, String dialogTitle) {
-        fileSelector.setDialogTitle("MCSkinner: Choose generation directory");
+        fileSelector.setDialogTitle(dialogTitle);
 
-        int respoonse = fileSelector.showOpenDialog(null);
-        if (respoonse == JFileChooser.APPROVE_OPTION) {
+        int response = fileSelector.showOpenDialog(null);
+        if (response == JFileChooser.APPROVE_OPTION) {
             File selectedFileGenPath = fileSelector.getSelectedFile();
             return selectedFileGenPath.getAbsolutePath();
         } else return "This can't be empty";

@@ -1,12 +1,21 @@
 package com.redfox.mcskinner.ui;
 
+import com.redfox.mcskinner.SkinPackGen;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainFrame extends JFrame implements ActionListener {
+    private ArrayList<HashMap<String, String>> skins = new ArrayList<>();
+
+
+    AddSkinFrame addSkinFrame;
+
     private CardLayout cardLayout;
     private Container contentRoot;
 
@@ -40,8 +49,9 @@ public class MainFrame extends JFrame implements ActionListener {
     private JButton jbSelctFileGenPath = new JButton();
     private JFileChooser fcSelectFileGenPath = new JFileChooser();
 
-    private JPanel jpAddSkin = new JPanel(new BorderLayout(60, 60));
+    private JPanel jpLowButtons = new JPanel(new BorderLayout(60, 60));
     private JButton jbAddSkin = new JButton("Add Skin");
+    private JButton jbApply = new JButton("Generate Skin-Pack");
     private JPanel jpNewSkinPack = new JPanel(new BorderLayout());
     public MainFrame() {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -60,13 +70,6 @@ public class MainFrame extends JFrame implements ActionListener {
         jpHomePanelS.setPreferredSize(new Dimension(100, 190));
         jpHomePanelW.setPreferredSize(new Dimension(100, 190));
         jpHomePanelE.setPreferredSize(new Dimension(100, 190));
-
-        //testing:
-        jpHomePanelN.setBackground(Color.green);
-        jpHomePanelS.setBackground(Color.red);
-        jpHomePanelW.setBackground(Color.blue);
-        jpHomePanelE.setBackground(Color.yellow);
-        //
 
         jpHomePanel.add(jbNewSkinPack, BorderLayout.CENTER);
         jpHomePanel.add(jpHomePanelN, BorderLayout.NORTH);
@@ -107,10 +110,16 @@ public class MainFrame extends JFrame implements ActionListener {
         jpCenterGrid.setVisible(true);
 
         jbAddSkin.addActionListener(this);
-        jpAddSkin.setPreferredSize(new Dimension(50, 70));
-        jpAddSkin.add(jbAddSkin, BorderLayout.CENTER);
+        jbApply.addActionListener(this);
 
-        jpNewSkinPack.add(jpAddSkin, BorderLayout.SOUTH);
+        jbAddSkin.setPreferredSize(new Dimension(1, 58));
+        jbApply.setPreferredSize(new Dimension(1, 58));
+
+        jpLowButtons.setPreferredSize(new Dimension(50, 120));
+        jpLowButtons.add(jbAddSkin, BorderLayout.NORTH);
+        jpLowButtons.add(jbApply, BorderLayout.SOUTH);
+
+        jpNewSkinPack.add(jpLowButtons, BorderLayout.SOUTH);
 
         jpNewSkinPack.add(jpCenterGrid, BorderLayout.CENTER);
 
@@ -127,19 +136,55 @@ public class MainFrame extends JFrame implements ActionListener {
         if (e.getSource() == jbNewSkinPack) {
             cardLayout.next(contentRoot);
             this.setTitle("MCSkinner: Create new skin-pack");
+
+            this.setSize(700, 550);
         } else if (e.getSource() == jbSelctFileGenPath) {
             fcSelectFileGenPath.setDialogTitle("MCSkinner: Choose generation directory");
             fcSelectFileGenPath.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
-            int respoonse = fcSelectFileGenPath.showOpenDialog(null);
-            if (respoonse == JFileChooser.APPROVE_OPTION) {
+            int response = fcSelectFileGenPath.showOpenDialog(null);
+            if (response == JFileChooser.APPROVE_OPTION) {
                 File selectedFileGenPath = fcSelectFileGenPath.getSelectedFile();
                 tfFileGenPath.setText(selectedFileGenPath.getAbsolutePath());
             }
         } else if (e.getSource() == jbAddSkin) {
-            new AddSkinFrame();
-        } else if (e.getSource() == AddSkinFrame.jbApply) {
-            System.out.println("jbApply");
+            addSkinFrame = new AddSkinFrame();
+        } else if (e.getSource() == addSkinFrame.jbApply) {
+
+            HashMap<String, String> skin = new HashMap<>();
+            skin.put("name", addSkinFrame.tfName.getText());
+            skin.put("geo", addSkinFrame.cbGeo.getItemAt(addSkinFrame.cbGeo.getSelectedIndex()));
+            skin.put("texture", addSkinFrame.tfTexture.getText());
+            if (addSkinFrame.cape) {
+                skin.put("cape", addSkinFrame.tfCape.getText());
+            }
+
+            for (String key : skin.keySet()) {
+                System.out.println(key + ": " + skin.get(key));
+            }
+
+            skins.add(skin);
+            addSkinFrame.dispose();
+        } else if (e.getSource() == jbApply) {
+            String version = tfVersion1.getText() + ", " + tfVersion2.getText() + ", " + tfVersion3.getText();
+            String mcVersion = tfMCVersion1.getText() + ", " + tfMCVersion2.getText() + ", " + tfMCVersion3.getText();
+
+            SkinPackGen skinPackGen = new SkinPackGen(skins,
+                    tfName.getText(), tfAuthor.getText(),tfDescription.getText(),version, mcVersion,
+                    tfFileGenPath.getText());
+
+            String json = skinPackGen.genSkinsJSON();
+            System.out.println("skins.json: \n" + json + "\n");
+
+            String lang = skinPackGen.genDefLangFile();
+            System.out.println("en_US.lang: \n" + lang + "\n");
+
+            String langJSON = skinPackGen.genLangJSON();
+            System.out.println("languages.json: \n" + langJSON + "\n");
+
+            String manifestJSON = skinPackGen.genManifestJSON();
+            System.out.println("manifest.json: \n" + manifestJSON);
+            skinPackGen.genSkinPackFiles();
         }
     }
 }
