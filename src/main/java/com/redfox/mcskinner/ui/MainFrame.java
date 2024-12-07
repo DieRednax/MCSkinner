@@ -1,7 +1,8 @@
 package com.redfox.mcskinner.ui;
 
 import com.formdev.flatlaf.*;
-import com.formdev.flatlaf.themes.FlatMacLightLaf;
+import com.formdev.flatlaf.themes.*;
+import com.redfox.mcskinner.MCSkinner;
 import com.redfox.mcskinner.SkinPackGen;
 
 import javax.swing.*;
@@ -9,6 +10,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -18,7 +21,8 @@ public class MainFrame extends JFrame implements ActionListener {
 
     private AddSkinFrame addSkinFrame;
 
-    public final ImageIcon openFileIcon = new ImageIcon("src/main/resources/mcskinner/icons/file-open-2-64.png");
+    public InputStream openFileInputStream = MCSkinner.class.getResourceAsStream("/mcskinner/icons/file-open-2-64.png");
+    public final ImageIcon openFileIcon  = new ImageIcon(openFileInputStream.readAllBytes());
 
     private CardLayout cardLayout;
     private Container contentRoot;
@@ -57,7 +61,7 @@ public class MainFrame extends JFrame implements ActionListener {
     private JButton jbAddSkin = new JButton("Add Skin");
     private JButton jbApply = new JButton("Generate Skin-Pack");
     private JPanel jpNewSkinPack = new JPanel(new BorderLayout());
-    public MainFrame() {
+    public MainFrame() throws IOException {
         String os = System.getProperty("os.name").toLowerCase();
         if (!(os.contains("mac") || os.contains("darwin"))) {
             FlatLightLaf.setup();
