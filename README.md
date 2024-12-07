@@ -12,10 +12,12 @@ But this is sometimes a very annoying process, so I made MCSkinner to automate t
    - example:
 
 ![example of filled in data](.github/Screenshot-of-example-newskinpack-data.png)
+
 5. To add a skin to the pack, press "Add Skin" and fill in the skin data
    - example:
 
 ![example of filled in data (add skin)](.github/Screenshot-of-example-addskin-data-no-cape.png)
+
 6. You can also optionally add a cape texture
 7. When you're done add the skin (you can also add more skins) and genrate the skin pack
 8. This will generate a folder with the skinpack content. You can import this into Minecraft using 2 different ways
