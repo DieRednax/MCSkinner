@@ -1,6 +1,8 @@
 # MCSkinner
-MCSkinner is a java program that generates Minecraft bedrock skinpacks. In Minecraft, you can customize you skin by selecting a png file, but you can also create a skinpack that includes all the skins with names and even custom capes!
-But this is sometimes a very annoying process, so I made MCSkinner to automate the process. Now you only have to select the content and, it automatically makes the skinpack.
+MCSkinner is a java program that generates Minecraft bedrock skinpacks. 
+
+In Minecraft, you can customize you skin by selecting a png file, but you can also create a skinpack that includes all the skins with names and even custom capes!
+But this is sometimes a very annoying process, so I made MCSkinner to automate it. Now you only have to select the content and it automatically makes the skinpack.
 
 ## How to use
 1. Download the light or dark themed *.jar file from the [releases page](https://github.com/DieRednax/MCSkinner/releases)
