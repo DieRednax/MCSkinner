@@ -65,7 +65,8 @@ public class MainFrame extends JFrame implements ActionListener {
         String os = System.getProperty("os.name").toLowerCase();
         if (!(os.contains("mac") || os.contains("darwin"))) {
             FlatLightLaf.setup();
-        } else FlatMacLightLaf.setup();
+//            FlatDarkLaf.setup();
+        } else FlatMacLightLaf.setup(); //FlatMacDarkLaf.setup();
 
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setSize(700, 500);
