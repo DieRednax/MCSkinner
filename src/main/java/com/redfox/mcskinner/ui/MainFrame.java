@@ -177,32 +177,38 @@ public class MainFrame extends JFrame implements ActionListener {
             addSkinFrame = new AddSkinFrame();
         } else if (e.getSource() == addSkinFrame.jbApply) {
 
+            boolean textureCorrect;
+            boolean capeCorrect;
             HashMap<String, String> skin = new HashMap<>();
             skin.put("name", addSkinFrame.tfName.getText());
             skin.put("geo", addSkinFrame.cbGeo.getItemAt(addSkinFrame.cbGeo.getSelectedIndex()));
             if (!(addSkinFrame.tfTexture.getText().equals("> This can't be empty") || addSkinFrame.tfTexture.getText().equals(">"))) {
                 skin.put("texture", addSkinFrame.tfTexture.getText());
+                textureCorrect = true;
             } else {
                 //resume
                 System.out.println("tfTexture must be filled");
-                skin.put("texture", "test\\Lightning dragon skin.png");
+                textureCorrect = false;
             }
             if (addSkinFrame.cape) {
                 if (!(addSkinFrame.tfCape.getText().equals("> This can't be empty") || addSkinFrame.tfCape.getText().equals(">"))) {
                     skin.put("cape", addSkinFrame.tfCape.getText());
+                    capeCorrect = true;
                 } else {
                     //resume
                     System.out.println("tfCape must be filled");
-                    skin.put("texture", "test\\Ace.png");
+                    capeCorrect = false;
                 }
-            }
+            } else capeCorrect = true;
 
-            for (String key : skin.keySet()) {
-                System.out.println(key + ": " + skin.get(key));
-            }
+            if (textureCorrect && capeCorrect) {
+                for (String key : skin.keySet()) {
+                    System.out.println(key + ": " + skin.get(key));
+                }
 
-            skins.add(skin);
-            addSkinFrame.dispose();
+                skins.add(skin);
+                addSkinFrame.dispose();
+            }
         } else if (e.getSource() == jbApply) {
             String version = tfVersion1.getText() + ", " + tfVersion2.getText() + ", " + tfVersion3.getText();
             String mcVersion;
@@ -216,35 +222,32 @@ public class MainFrame extends JFrame implements ActionListener {
                 mcVersion = "1, 21, 60";
             }
 
-            String fileGenPath;
             if (!(tfFileGenPath.getText().equals("> This can't be empty") || tfFileGenPath.getText().equals(">"))) {
-                fileGenPath = tfFileGenPath.getText();
+                SkinPackGen skinPackGen = new SkinPackGen(skins,
+                        tfName.getText(), tfAuthor.getText(),tfDescription.getText(),version, mcVersion,
+                        tfFileGenPath.getText());
+
+                String json = skinPackGen.genSkinsJSON();
+                System.out.println("skins.json: \n" + json + "\n");
+
+                String lang = skinPackGen.genDefLangFile();
+                System.out.println("en_US.lang: \n" + lang + "\n");
+
+                String langJSON = skinPackGen.genLangJSON();
+                System.out.println("languages.json: \n" + langJSON + "\n");
+
+                String manifestJSON = skinPackGen.genManifestJSON();
+                System.out.println("manifest.json: \n" + manifestJSON);
+                skinPackGen.genSkinPackFiles();
+
+                cardLayout.next(contentRoot);
+                this.setTitle("MCSkinner");
+
+                this.setSize(700, 500);
             } else {
                 //resume
                 System.out.println("tfFileGenPath must be filled");
-                fileGenPath = "test";
             }
-            SkinPackGen skinPackGen = new SkinPackGen(skins,
-                    tfName.getText(), tfAuthor.getText(),tfDescription.getText(),version, mcVersion,
-                    fileGenPath);
-
-            String json = skinPackGen.genSkinsJSON();
-            System.out.println("skins.json: \n" + json + "\n");
-
-            String lang = skinPackGen.genDefLangFile();
-            System.out.println("en_US.lang: \n" + lang + "\n");
-
-            String langJSON = skinPackGen.genLangJSON();
-            System.out.println("languages.json: \n" + langJSON + "\n");
-
-            String manifestJSON = skinPackGen.genManifestJSON();
-            System.out.println("manifest.json: \n" + manifestJSON);
-            skinPackGen.genSkinPackFiles();
-
-            cardLayout.next(contentRoot);
-            this.setTitle("MCSkinner");
-
-            this.setSize(700, 500);
         }
     }
 }
