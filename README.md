@@ -5,6 +5,7 @@ In Minecraft, you can customize you skin by selecting a png file, but you can al
 But this is sometimes a very annoying process, so I made MCSkinner to automate it. Now you only have to select the content and it automatically makes the skinpack.
 
 ## How to use
+*I have a YouTube video coming*
 1. Download the light or dark themed *.jar file from the [releases page](https://github.com/DieRednax/MCSkinner/releases)
 2. Download the [Oracle JDK 21](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html) for your respective operating system
 3. Run the .jar file, either by:
