@@ -51,9 +51,9 @@ public class MainFrame extends JFrame implements ActionListener {
     private JPanel jpMCVersion = new JPanel(new GridLayout(1, 3));
     private JTextField tfMCVersion1 = new JTextField("1");
     private JTextField tfMCVersion2 = new JTextField("21");
-    private JTextField tfMCVersion3 = new JTextField("50");
+    private JTextField tfMCVersion3 = new JTextField("60");
     private JPanel jpFileGenPath = new JPanel(new BorderLayout(2, 2));
-    private JTextField tfFileGenPath = new JTextField();
+    private JTextField tfFileGenPath = new JTextField(">");
     private JButton jbSelctFileGenPath = new JButton();
     private JFileChooser fcSelectFileGenPath = new JFileChooser();
 
@@ -172,7 +172,7 @@ public class MainFrame extends JFrame implements ActionListener {
             if (response == JFileChooser.APPROVE_OPTION) {
                 File selectedFileGenPath = fcSelectFileGenPath.getSelectedFile();
                 tfFileGenPath.setText(selectedFileGenPath.getAbsolutePath());
-            }
+            } else tfFileGenPath.setText("> This can't be empty");
         } else if (e.getSource() == jbAddSkin) {
             addSkinFrame = new AddSkinFrame();
         } else if (e.getSource() == addSkinFrame.jbApply) {
@@ -180,9 +180,21 @@ public class MainFrame extends JFrame implements ActionListener {
             HashMap<String, String> skin = new HashMap<>();
             skin.put("name", addSkinFrame.tfName.getText());
             skin.put("geo", addSkinFrame.cbGeo.getItemAt(addSkinFrame.cbGeo.getSelectedIndex()));
-            skin.put("texture", addSkinFrame.tfTexture.getText());
+            if (!(addSkinFrame.tfTexture.getText().equals("> This can't be empty") || addSkinFrame.tfTexture.getText().equals(">"))) {
+                skin.put("texture", addSkinFrame.tfTexture.getText());
+            } else {
+                //resume
+                System.out.println("tfTexture must be filled");
+                skin.put("texture", "test\\Lightning dragon skin.png");
+            }
             if (addSkinFrame.cape) {
-                skin.put("cape", addSkinFrame.tfCape.getText());
+                if (!(addSkinFrame.tfCape.getText().equals("> This can't be empty") || addSkinFrame.tfCape.getText().equals(">"))) {
+                    skin.put("cape", addSkinFrame.tfCape.getText());
+                } else {
+                    //resume
+                    System.out.println("tfCape must be filled");
+                    skin.put("texture", "test\\Ace.png");
+                }
             }
 
             for (String key : skin.keySet()) {
@@ -193,11 +205,28 @@ public class MainFrame extends JFrame implements ActionListener {
             addSkinFrame.dispose();
         } else if (e.getSource() == jbApply) {
             String version = tfVersion1.getText() + ", " + tfVersion2.getText() + ", " + tfVersion3.getText();
-            String mcVersion = tfMCVersion1.getText() + ", " + tfMCVersion2.getText() + ", " + tfMCVersion3.getText();
+            String mcVersion;
+            if (Integer.parseInt(tfMCVersion1.getText()) <= 1
+                && Integer.parseInt(tfMCVersion2.getText()) <= 21
+                && Integer.parseInt(tfMCVersion3.getText())  <= 60) {
+                mcVersion = tfMCVersion1.getText() + ", " + tfMCVersion2.getText() + ", " + tfMCVersion3.getText();
+            } else {
+                //resume
+                System.out.println("MC version must be: 1 21 60 or lower");
+                mcVersion = "1, 21, 60";
+            }
 
+            String fileGenPath;
+            if (!(tfFileGenPath.getText().equals("> This can't be empty") || tfFileGenPath.getText().equals(">"))) {
+                fileGenPath = tfFileGenPath.getText();
+            } else {
+                //resume
+                System.out.println("tfFileGenPath must be filled");
+                fileGenPath = "test";
+            }
             SkinPackGen skinPackGen = new SkinPackGen(skins,
                     tfName.getText(), tfAuthor.getText(),tfDescription.getText(),version, mcVersion,
-                    tfFileGenPath.getText());
+                    fileGenPath);
 
             String json = skinPackGen.genSkinsJSON();
             System.out.println("skins.json: \n" + json + "\n");

@@ -3,10 +3,13 @@ package com.redfox.mcskinner.ui;
 import com.formdev.flatlaf.FlatLightLaf;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
 
 import static com.redfox.mcskinner.MCSkinner.mainFrame;
 
@@ -24,10 +27,10 @@ public class AddSkinFrame extends JFrame implements ActionListener {
     public JComboBox<String> cbGeo = new JComboBox<>(new String[]{"Classic", "Slim"});
 //    public JTextField tfGeoPath = new JTextField();
     private JPanel jpTexture = new JPanel(new BorderLayout(1, 1));
-    public JTextField tfTexture = new JTextField();
+    public JTextField tfTexture = new JTextField(">");
     private JButton jbSelectTexture = new JButton();
     private JPanel jpCape = new JPanel(new BorderLayout(1, 1));
-    public JTextField tfCape = new JTextField();
+    public JTextField tfCape = new JTextField(">");
     private JButton jbSelectCape = new JButton();
     private JFileChooser fcSelectTexture = new JFileChooser();
     private JFileChooser fcSelectCape = new JFileChooser();
@@ -89,19 +92,20 @@ public class AddSkinFrame extends JFrame implements ActionListener {
 
             cape = true;
         } else if (e.getSource() == jbSelectTexture) {
-            tfTexture.setText(selectFile(fcSelectTexture, "MCSkinner: Select Skin-Texture"));
+            tfTexture.setText(selectFile(fcSelectTexture, "MCSkinner: Select Skin-Texture", "*.png", "png"));
         } else if (e.getSource() == jbSelectCape) {
-            tfCape.setText(selectFile(fcSelectCape, "MCSkinner: Select Skin Cape-Texture"));
+            tfCape.setText(selectFile(fcSelectCape, "MCSkinner: Select Skin Cape-Texture", "*.png", "png"));
         }
     }
-    public String selectFile(JFileChooser fileSelector, String dialogTitle) {
+    public String selectFile(JFileChooser fileSelector, String dialogTitle, String fileExtensionFilterDescription, String fileExtensionFilterExtension) {
         fileSelector.setDialogTitle(dialogTitle);
         fileSelector.setCurrentDirectory(new File(System.getProperty("user.home")));
+        fileSelector.setFileFilter(new FileNameExtensionFilter(fileExtensionFilterDescription, fileExtensionFilterExtension));
 
         int response = fileSelector.showOpenDialog(this);
         if (response == JFileChooser.APPROVE_OPTION) {
             File selectedFileGenPath = fileSelector.getSelectedFile();
             return selectedFileGenPath.getAbsolutePath();
-        } else return "This can't be empty";
+        } else return "> This can't be empty";
     }
 }
