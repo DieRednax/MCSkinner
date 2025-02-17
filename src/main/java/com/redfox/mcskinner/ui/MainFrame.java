@@ -186,8 +186,7 @@ public class MainFrame extends JFrame implements ActionListener {
                 skin.put("texture", addSkinFrame.tfTexture.getText());
                 textureCorrect = true;
             } else {
-                //resume
-                System.out.println("tfTexture must be filled");
+                JOptionPane.showMessageDialog(addSkinFrame, "You must insert a skin texture (*.png)", "MCSkinner: warning", JOptionPane.WARNING_MESSAGE);
                 textureCorrect = false;
             }
             if (addSkinFrame.cape) {
@@ -195,8 +194,7 @@ public class MainFrame extends JFrame implements ActionListener {
                     skin.put("cape", addSkinFrame.tfCape.getText());
                     capeCorrect = true;
                 } else {
-                    //resume
-                    System.out.println("tfCape must be filled");
+                    JOptionPane.showMessageDialog(addSkinFrame, "You must insert a cape texture (*.png)", "MCSkinner: warning", JOptionPane.WARNING_MESSAGE);
                     capeCorrect = false;
                 }
             } else capeCorrect = true;
@@ -216,37 +214,35 @@ public class MainFrame extends JFrame implements ActionListener {
                 && Integer.parseInt(tfMCVersion2.getText()) <= 21
                 && Integer.parseInt(tfMCVersion3.getText())  <= 60) {
                 mcVersion = tfMCVersion1.getText() + ", " + tfMCVersion2.getText() + ", " + tfMCVersion3.getText();
+
+
+                if (!(tfFileGenPath.getText().equals("> This can't be empty") || tfFileGenPath.getText().equals(">"))) {
+                    SkinPackGen skinPackGen = new SkinPackGen(skins,
+                            tfName.getText(), tfAuthor.getText(),tfDescription.getText(),version, mcVersion,
+                            tfFileGenPath.getText());
+
+                    String json = skinPackGen.genSkinsJSON();
+                    System.out.println("skins.json: \n" + json + "\n");
+
+                    String lang = skinPackGen.genDefLangFile();
+                    System.out.println("en_US.lang: \n" + lang + "\n");
+
+                    String langJSON = skinPackGen.genLangJSON();
+                    System.out.println("languages.json: \n" + langJSON + "\n");
+
+                    String manifestJSON = skinPackGen.genManifestJSON();
+                    System.out.println("manifest.json: \n" + manifestJSON);
+                    skinPackGen.genSkinPackFiles();
+
+                    cardLayout.next(contentRoot);
+                    this.setTitle("MCSkinner");
+
+                    this.setSize(700, 500);
+                } else {
+                    JOptionPane.showMessageDialog(this, "You must insert a path of generation", "MCSkinner: warning", JOptionPane.WARNING_MESSAGE);
+                }
             } else {
-                //resume
-                System.out.println("MC version must be: 1 21 60 or lower");
-                mcVersion = "1, 21, 60";
-            }
-
-            if (!(tfFileGenPath.getText().equals("> This can't be empty") || tfFileGenPath.getText().equals(">"))) {
-                SkinPackGen skinPackGen = new SkinPackGen(skins,
-                        tfName.getText(), tfAuthor.getText(),tfDescription.getText(),version, mcVersion,
-                        tfFileGenPath.getText());
-
-                String json = skinPackGen.genSkinsJSON();
-                System.out.println("skins.json: \n" + json + "\n");
-
-                String lang = skinPackGen.genDefLangFile();
-                System.out.println("en_US.lang: \n" + lang + "\n");
-
-                String langJSON = skinPackGen.genLangJSON();
-                System.out.println("languages.json: \n" + langJSON + "\n");
-
-                String manifestJSON = skinPackGen.genManifestJSON();
-                System.out.println("manifest.json: \n" + manifestJSON);
-                skinPackGen.genSkinPackFiles();
-
-                cardLayout.next(contentRoot);
-                this.setTitle("MCSkinner");
-
-                this.setSize(700, 500);
-            } else {
-                //resume
-                System.out.println("tfFileGenPath must be filled");
+                JOptionPane.showMessageDialog(this, "The MC Version must be 1 21 60 or lower", "MCSkinner: warning", JOptionPane.WARNING_MESSAGE);
             }
         }
     }
