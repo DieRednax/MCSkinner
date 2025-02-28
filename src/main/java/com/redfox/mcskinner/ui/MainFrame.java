@@ -2,6 +2,8 @@ package com.redfox.mcskinner.ui;
 
 import com.formdev.flatlaf.*;
 import com.formdev.flatlaf.themes.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.redfox.mcskinner.MCSkinner;
 import com.redfox.mcskinner.SkinPackGen;
 
@@ -9,11 +11,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class MainFrame extends JFrame implements ActionListener {
     private ArrayList<HashMap<String, String>> skins = new ArrayList<>();
@@ -24,8 +25,17 @@ public class MainFrame extends JFrame implements ActionListener {
     public InputStream openFileInputStream = MCSkinner.class.getResourceAsStream("/mcskinner/icons/file-open-2-64.png");
     public final ImageIcon openFileIcon  = new ImageIcon(openFileInputStream.readAllBytes());
 
+    private HashMap<String, String> settings = new HashMap<>();
+
     private CardLayout cardLayout;
     private Container contentRoot;
+
+    private JMenuBar mbMain = new JMenuBar();
+    private JMenu jmSettings = new JMenu("Settings");
+    private JMenuItem miOpenSettings = new JMenuItem("Open Settings");
+    private JMenu jmTheme = new JMenu("Theme");
+    private JMenuItem miLight = new JMenuItem("Light");
+    private JMenuItem miDark = new JMenuItem("Dark");
 
     private JPanel jpHomePanel = new JPanel(new BorderLayout());
     private JPanel jpHomePanelN = new JPanel();
@@ -62,17 +72,26 @@ public class MainFrame extends JFrame implements ActionListener {
     private JButton jbApply = new JButton("Generate Skin-Pack");
     private JPanel jpNewSkinPack = new JPanel(new BorderLayout());
     public MainFrame() throws IOException {
+        Gson gson = new Gson();
+        try (FileReader fr = new FileReader("settings.json")) {
+            settings = gson.fromJson(fr, HashMap.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         String os = System.getProperty("os.name").toLowerCase();
         if (!(os.contains("mac") || os.contains("darwin"))) {
-            FlatLightLaf.setup();
-//            FlatDarkLaf.setup();
+            if (settings.get("theme").equals("light")) {
+                FlatLightLaf.setup();
+            } else FlatDarkLaf.setup();
         } else {
-            FlatMacLightLaf.setup();
-//            FlatMacDarkLaf.setup();
+            if (settings.get("theme").equals("light")) {
+                FlatMacLightLaf.setup();
+            } else FlatMacDarkLaf.setup();
         }
 
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setSize(700, 500);
+        this.setSize(700, 520);
 //        this.setIconImage(programIcon.getImage());
         this.setTitle("MCSkinner");
         this.setResizable(true);
@@ -147,11 +166,28 @@ public class MainFrame extends JFrame implements ActionListener {
         contentRoot.add("NewSkinPack", jpHomePanel);
         contentRoot.add("Home", jpNewSkinPack);
 
+        miLight.addActionListener(this);
+        miDark.addActionListener(this);
+        jmTheme.add(miLight);
+        jmTheme.add(miDark);
+
+        jmSettings.add(jmTheme);
+        jmSettings.add(miOpenSettings);
+
+        mbMain.add(jmSettings);
+
+        this.setJMenuBar(mbMain);
         this.setVisible(true);
     }
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == jbNewSkinPack) {
+        if (e.getSource() == miLight) {
+            settings.put("theme", "light");
+            updateSettingsJson(settings);
+        } else if (e.getSource() == miDark) {
+            settings.put("theme", "dark");
+            updateSettingsJson(settings);
+        } else if (e.getSource() == jbNewSkinPack) {
             cardLayout.next(contentRoot);
             this.setTitle("MCSkinner: Create new skin-pack");
 
@@ -247,6 +283,14 @@ public class MainFrame extends JFrame implements ActionListener {
             } else {
                 JOptionPane.showMessageDialog(this, "The MC Version must be 1 21 60 or lower", "MCSkinner: warning", JOptionPane.WARNING_MESSAGE);
             }
+        }
+    }
+    private void updateSettingsJson(HashMap<String, String> settings) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        try (FileWriter fw = new FileWriter("settings.json")) {
+            gson.toJson(settings, fw);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
