@@ -6,7 +6,7 @@ But this is sometimes a very annoying process, so I made MCSkinner to automate i
 
 ## How to use
 *I have a YouTube video coming*
-1. Download the light or dark themed *.jar file from the [releases page](https://github.com/DieRednax/MCSkinner/releases)
+1. Download the *.jar file from the [releases page](https://github.com/DieRednax/MCSkinner/releases)
 2. Download the [Oracle JDK 21](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html) for your respective operating system
 3. Run the .jar file, either by:
    - double-clicking the file or
