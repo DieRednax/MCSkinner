@@ -72,11 +72,16 @@ public class MainFrame extends JFrame implements ActionListener {
     private JButton jbApply = new JButton("Generate Skin-Pack");
     private JPanel jpNewSkinPack = new JPanel(new BorderLayout());
     public MainFrame() throws IOException {
-        Gson gson = new Gson();
-        try (FileReader fr = new FileReader("settings.json")) {
-            settings = gson.fromJson(fr, HashMap.class);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (new File("settings.json").exists()) {
+            Gson gson = new Gson();
+            try (FileReader fr = new FileReader("settings.json")) {
+                settings = gson.fromJson(fr, HashMap.class);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            settings.put("theme", "light");
+            updateSettingsJson(settings);
         }
 
         String os = System.getProperty("os.name").toLowerCase();
@@ -184,9 +189,11 @@ public class MainFrame extends JFrame implements ActionListener {
         if (e.getSource() == miLight) {
             settings.put("theme", "light");
             updateSettingsJson(settings);
+            JOptionPane.showMessageDialog(this, "You must restart MCSkinner to apply your changes", "MCSkinner: info", JOptionPane.INFORMATION_MESSAGE);
         } else if (e.getSource() == miDark) {
             settings.put("theme", "dark");
             updateSettingsJson(settings);
+            JOptionPane.showMessageDialog(this, "You must restart MCSkinner to apply your changes", "MCSkinner: info", JOptionPane.INFORMATION_MESSAGE);
         } else if (e.getSource() == jbNewSkinPack) {
             cardLayout.next(contentRoot);
             this.setTitle("MCSkinner: Create new skin-pack");
