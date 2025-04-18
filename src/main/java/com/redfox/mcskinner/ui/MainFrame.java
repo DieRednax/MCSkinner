@@ -14,7 +14,6 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 public class MainFrame extends JFrame implements ActionListener {
     private ArrayList<HashMap<String, String>> skins = new ArrayList<>();
@@ -51,9 +50,9 @@ public class MainFrame extends JFrame implements ActionListener {
     private JLabel jlVersion = new JLabel("Version: ");
     private JLabel jlMCVersion = new JLabel("MC Version: ");
     private JLabel jlFileGenPath = new JLabel("Path of generation: ");
-    private JTextField tfName = new JTextField();
-    private JTextField tfDescription = new JTextField();
-    private JTextField tfAuthor = new JTextField();
+    private JTextField tfName = new JTextField(">");
+    private JTextField tfDescription = new JTextField(">");
+    private JTextField tfAuthor = new JTextField(">");
     private JPanel jpVersion = new JPanel(new GridLayout(1, 3));
     private JTextField tfVersion1 = new JTextField("1");
     private JTextField tfVersion2 = new JTextField("0");
@@ -61,7 +60,7 @@ public class MainFrame extends JFrame implements ActionListener {
     private JPanel jpMCVersion = new JPanel(new GridLayout(1, 3));
     private JTextField tfMCVersion1 = new JTextField("1");
     private JTextField tfMCVersion2 = new JTextField("21");
-    private JTextField tfMCVersion3 = new JTextField("60");
+    private JTextField tfMCVersion3 = new JTextField("71");
     private JPanel jpFileGenPath = new JPanel(new BorderLayout(2, 2));
     private JTextField tfFileGenPath = new JTextField(">");
     private JButton jbSelctFileGenPath = new JButton();
@@ -223,16 +222,24 @@ public class MainFrame extends JFrame implements ActionListener {
             addSkinFrame = new AddSkinFrame();
         } else if (e.getSource() == addSkinFrame.jbApply) {
 
+            boolean nameCorrect;
             boolean textureCorrect;
             boolean capeCorrect;
             HashMap<String, String> skin = new HashMap<>();
-            skin.put("name", addSkinFrame.tfName.getText());
             skin.put("geo", addSkinFrame.cbGeo.getItemAt(addSkinFrame.cbGeo.getSelectedIndex()));
+
+            if (!(addSkinFrame.tfName.getText().equals("> This can't be empty") || addSkinFrame.tfName.getText().equals(">"))) {
+                skin.put("name", addSkinFrame.tfName.getText());
+                nameCorrect = true;
+            } else {
+                warning(addSkinFrame, "You must insert a skin name");
+                nameCorrect = false;
+            }
             if (!(addSkinFrame.tfTexture.getText().equals("> This can't be empty") || addSkinFrame.tfTexture.getText().equals(">"))) {
                 skin.put("texture", addSkinFrame.tfTexture.getText());
                 textureCorrect = true;
             } else {
-                JOptionPane.showMessageDialog(addSkinFrame, "You must insert a skin texture (*.png)", "MCSkinner: warning", JOptionPane.WARNING_MESSAGE);
+                warning(addSkinFrame, "You must insert a skin texture (*.png)");
                 textureCorrect = false;
             }
             if (addSkinFrame.cape) {
@@ -240,12 +247,12 @@ public class MainFrame extends JFrame implements ActionListener {
                     skin.put("cape", addSkinFrame.tfCape.getText());
                     capeCorrect = true;
                 } else {
-                    JOptionPane.showMessageDialog(addSkinFrame, "You must insert a cape texture (*.png)", "MCSkinner: warning", JOptionPane.WARNING_MESSAGE);
+                    warning(addSkinFrame, "You must insert a cape texture (*.png)");
                     capeCorrect = false;
                 }
             } else capeCorrect = true;
 
-            if (textureCorrect && capeCorrect) {
+            if (textureCorrect && capeCorrect && nameCorrect) {
                 for (String key : skin.keySet()) {
                     System.out.println(key + ": " + skin.get(key));
                 }
@@ -258,11 +265,14 @@ public class MainFrame extends JFrame implements ActionListener {
             String mcVersion;
             if (Integer.parseInt(tfMCVersion1.getText()) <= 1
                 && Integer.parseInt(tfMCVersion2.getText()) <= 21
-                && Integer.parseInt(tfMCVersion3.getText())  <= 60) {
+                && Integer.parseInt(tfMCVersion3.getText())  <= 71) {
                 mcVersion = tfMCVersion1.getText() + ", " + tfMCVersion2.getText() + ", " + tfMCVersion3.getText();
 
 
-                if (!(tfFileGenPath.getText().equals("> This can't be empty") || tfFileGenPath.getText().equals(">"))) {
+                if (mainFrameCorrect(tfFileGenPath, "path of generation")
+                    && mainFrameCorrect(tfName, "skin-pack name")
+                    && mainFrameCorrect(tfDescription, "skin-pack description")
+                    && mainFrameCorrect(tfAuthor, "skin-pack author")) {
                     SkinPackGen skinPackGen = new SkinPackGen(skins,
                             tfName.getText(), tfAuthor.getText(),tfDescription.getText(),version, mcVersion,
                             tfFileGenPath.getText());
@@ -284,11 +294,9 @@ public class MainFrame extends JFrame implements ActionListener {
                     this.setTitle("MCSkinner");
 
                     this.setSize(700, 500);
-                } else {
-                    JOptionPane.showMessageDialog(this, "You must insert a path of generation", "MCSkinner: warning", JOptionPane.WARNING_MESSAGE);
                 }
             } else {
-                JOptionPane.showMessageDialog(this, "The MC Version must be 1 21 60 or lower", "MCSkinner: warning", JOptionPane.WARNING_MESSAGE);
+                warning(this, "The MC Version must be 1 21 60 or lower");
             }
         }
     }
@@ -298,6 +306,17 @@ public class MainFrame extends JFrame implements ActionListener {
             gson.toJson(settings, fw);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+    private void warning(Component parent, String message) {
+        JOptionPane.showMessageDialog(parent, message, "MCSkinner: warning", JOptionPane.WARNING_MESSAGE);
+    }
+    private boolean mainFrameCorrect(JTextField tf, String tfWarnName) {
+        if (!(tf.getText().equals("> This can't be empty") || tf.getText().equals(">"))) {
+            return true;
+        } else {
+            warning(this, "You must insert a " + tfWarnName);
+            return false;
         }
     }
 }
