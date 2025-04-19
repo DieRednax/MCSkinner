@@ -231,14 +231,14 @@ public class MainFrame extends JFrame implements ActionListener {
             HashMap<String, String> skin = new HashMap<>();
             skin.put("geo", addSkinFrame.cbGeo.getItemAt(addSkinFrame.cbGeo.getSelectedIndex()));
 
-            if (!(addSkinFrame.tfName.getText().equals("> This can't be empty") || addSkinFrame.tfName.getText().equals(""))) {
+            if (!(addSkinFrame.tfName.getText().equals("> This can't be empty") || addSkinFrame.tfName.getText().isEmpty())) {
                 skin.put("name", addSkinFrame.tfName.getText());
                 nameCorrect = true;
             } else {
                 warning(addSkinFrame, "You must insert a skin name");
                 nameCorrect = false;
             }
-            if (!(addSkinFrame.tfTexture.getText().equals("> This can't be empty") || addSkinFrame.tfTexture.getText().equals(""))) {
+            if (!(addSkinFrame.tfTexture.getText().equals("> This can't be empty") || addSkinFrame.tfTexture.getText().isEmpty())) {
                 skin.put("texture", addSkinFrame.tfTexture.getText());
                 textureCorrect = true;
             } else {
@@ -246,7 +246,7 @@ public class MainFrame extends JFrame implements ActionListener {
                 textureCorrect = false;
             }
             if (addSkinFrame.cape) {
-                if (!(addSkinFrame.tfCape.getText().equals("> This can't be empty") || addSkinFrame.tfCape.getText().equals(""))) {
+                if (!(addSkinFrame.tfCape.getText().equals("> This can't be empty") || addSkinFrame.tfCape.getText().isEmpty())) {
                     skin.put("cape", addSkinFrame.tfCape.getText());
                     capeCorrect = true;
                 } else {
@@ -315,7 +315,7 @@ public class MainFrame extends JFrame implements ActionListener {
         JOptionPane.showMessageDialog(parent, message, "MCSkinner: warning", JOptionPane.WARNING_MESSAGE);
     }
     private boolean mainFrameCorrect(JTextField tf, String tfWarnName) {
-        if (!(tf.getText().equals("> This can't be empty") || tf.getText().equals(""))) {
+        if (!(tf.getText().equals("> This can't be empty") || tf.getText().isEmpty())) {
             return true;
         } else {
             warning(this, "You must insert a " + tfWarnName);
