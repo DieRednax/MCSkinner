@@ -23,14 +23,14 @@ public class AddSkinFrame extends JFrame implements ActionListener {
 //    private JLabel jlGeoPath = new JLabel("Geometry Path: ");
     private JLabel jlTexture = new JLabel("Texture: ");
     private JLabel jlCape = new JLabel("Cape Texture: ");
-    public JTextField tfName = new JTextField(" ");
+    public JTextField tfName = new JTextField("");
     public JComboBox<String> cbGeo = new JComboBox<>(new String[]{"Classic", "Slim"});
 //    public JTextField tfGeoPath = new JTextField();
     private JPanel jpTexture = new JPanel(new BorderLayout(1, 1));
-    public JTextField tfTexture = new JTextField(" ");
+    public JTextField tfTexture = new JTextField("");
     private JButton jbSelectTexture = new JButton();
     private JPanel jpCape = new JPanel(new BorderLayout(1, 1));
-    public JTextField tfCape = new JTextField(" ");
+    public JTextField tfCape = new JTextField("");
     private JButton jbSelectCape = new JButton();
     private JFileChooser fcSelectTexture = new JFileChooser();
     private JFileChooser fcSelectCape = new JFileChooser();
