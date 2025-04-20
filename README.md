@@ -31,3 +31,5 @@ But this is sometimes a very annoying process, so I made MCSkinner to automate i
 
 - [File icon](https://www.veryicon.com/icons/miscellaneous/decon/file-open-2.html)
 - [FlatLaf](https://www.formdev.com/flatlaf/)
+- [GSON](https://github.com/google/gson)
+- [jSystemThemeDetector](https://github.com/Dansoftowner/jSystemThemeDetector)

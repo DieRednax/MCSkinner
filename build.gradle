@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'com.redfox.mcskinner'
-version = 'b0.1'
+version = 'b0.4'
 
 repositories {
     mavenCentral()
