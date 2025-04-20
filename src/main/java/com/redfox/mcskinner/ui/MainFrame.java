@@ -4,6 +4,7 @@ import com.formdev.flatlaf.*;
 import com.formdev.flatlaf.themes.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.jthemedetecor.OsThemeDetector;
 import com.redfox.mcskinner.MCSkinner;
 import com.redfox.mcskinner.SkinPackGen;
 
@@ -254,7 +255,7 @@ public class MainFrame extends JFrame implements ActionListener {
             updateSettingsJson(settings, "settings.json");
             settingsChangesMessage();
         } else if (e.getSource() == miSystemTheme) {
-            if (systemThemeIsDark()) {
+            if (OsThemeDetector.getDetector().isDark()) {
                 settings.put("theme", "dark");
             } else settings.put("theme", "light");
             updateSettingsJson(settings, "settings.json");
@@ -443,30 +444,6 @@ public class MainFrame extends JFrame implements ActionListener {
         } else {
             JOptionPane.showMessageDialog(this, "No language file found", "MCSkinner: error", JOptionPane.ERROR_MESSAGE);
             System.exit(1);
-        }
-    }
-
-    public boolean systemThemeIsDark() {
-        try {
-
-            String os = System.getProperty("os.name").toLowerCase();
-            if (os.contains("win")) {
-                Preferences themePrefs = Preferences.userRoot().node("Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize");
-                return themePrefs.getInt("AppsUseLightTheme", 1) == 0;
-
-            } else if (os.contains("mac")) {
-                Process process = Runtime.getRuntime().exec(new String[]{
-                   "defaults", "read", "-g", "AppleInterfaceStyle"
-                });
-
-                int exitCode = process.waitFor();
-                return exitCode == 0;
-
-            } else return false;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
         }
     }
 }
