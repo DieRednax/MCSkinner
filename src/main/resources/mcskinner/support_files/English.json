@@ -1,0 +1,41 @@
+{
+  "mf.title.title": "MCSkinner: Create new skin-pack",
+  "mf.jb.new_skin_pack": "Create new skin-pack",
+
+
+  "mf.jm.settings": "Settings",
+
+  "mf.jm.theme": "Theme",
+  "mf.mi.light": "Light",
+  "mf.mi.dark": "Dark",
+  "mf.mi.sys_theme": "System Default",
+
+  "mf.jm.language": "Language",
+  "mf.mi.english": "English",
+  "mf.mi.afrikaans": "Afrikaans",
+  "mf.mi.chinese_mandarin": "Chinese Mandarin",
+
+  "mf.mi.default_save_loc": "Default save location...",
+  "mf.mi.open_settings": "Open Settings",
+
+  "mf.jl.name": "Name: ",
+  "mf.jl.description": "Description: ",
+  "mf.jl.author": "Author: ",
+  "mf.jl.version": "Version: ",
+  "mf.jl.mc_version": "MC Version: ",
+  "mf.jl.file_gen_path": "Path of generation: ",
+
+  "mf.jb.add_skin": "Add Skin",
+  "mf.jb.apply": "Generate Skin-Pack",
+
+
+  "asf.title.title": "MCSkinner: Add Skin",
+
+  "asf.jl.name": "Name: ",
+  "asf.jl.geo": "Geometry: ",
+  "asf.jl.texture": "Texture: ",
+  "asf.jl.cape": "Cape Texture: ",
+
+  "asf.jb.add_cape": "Add Cape",
+  "asf.jb.apply": "Add Skin"
+}

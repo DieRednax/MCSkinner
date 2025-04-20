@@ -1,0 +1,39 @@
+{
+  "mf.title.title": "MCSkinner：创建新的皮肤包",
+  "mf.jb.new_skin_pack": "创建新的皮肤包",
+
+  "mf.jm.settings": "设置",
+
+  "mf.jm.theme": "主题",
+  "mf.mi.light": "浅色",
+  "mf.mi.dark": "深色",
+  "mf.mi.sys_theme": "系统默认",
+
+  "mf.jm.language": "语言",
+  "mf.mi.english": "English",
+  "mf.mi.afrikaans": "Afrikaans",
+  "mf.mi.chinese_mandarin": "Chinese Mandarin",
+
+  "mf.mi.default_save_loc": "默认保存位置…",
+  "mf.mi.open_settings": "打开设置",
+
+  "mf.jl.name": "名称：",
+  "mf.jl.description": "描述：",
+  "mf.jl.author": "作者：",
+  "mf.jl.version": "版本：",
+  "mf.jl.mc_version": "MC版本：",
+  "mf.jl.file_gen_path": "生成路径：",
+
+  "mf.jb.add_skin": "添加皮肤",
+  "mf.jb.apply": "生成皮肤包",
+
+  "asf.title.title": "MCSkinner：添加皮肤",
+
+  "asf.jl.name": "名称：",
+  "asf.jl.geo": "几何体：",
+  "asf.jl.texture": "纹理：",
+  "asf.jl.cape": "披风纹理：",
+
+  "asf.jb.add_cape": "添加披风",
+  "asf.jb.apply": "添加皮肤"
+}

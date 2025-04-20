@@ -18,11 +18,11 @@ public class AddSkinFrame extends JFrame implements ActionListener {
 
 
     private JPanel jpCenterGrid = new JPanel(new GridLayout(3, 2));
-    private JLabel jlName = new JLabel("Name: ");
-    private JLabel jlGeo = new JLabel("Geometry: ");
+    private JLabel jlName = new JLabel(mainFrame.languageModules.get("asf.jl.name"));
+    private JLabel jlGeo = new JLabel(mainFrame.languageModules.get("asf.jl.geo"));
 //    private JLabel jlGeoPath = new JLabel("Geometry Path: ");
-    private JLabel jlTexture = new JLabel("Texture: ");
-    private JLabel jlCape = new JLabel("Cape Texture: ");
+    private JLabel jlTexture = new JLabel(mainFrame.languageModules.get("asf.jl.texture"));
+    private JLabel jlCape = new JLabel(mainFrame.languageModules.get("asf.jl.cape"));
     public JTextField tfName = new JTextField("");
     public JComboBox<String> cbGeo = new JComboBox<>(new String[]{"Classic", "Slim"});
 //    public JTextField tfGeoPath = new JTextField();
@@ -36,12 +36,12 @@ public class AddSkinFrame extends JFrame implements ActionListener {
     private JFileChooser fcSelectCape = new JFileChooser();
 
     private JPanel jpLowButtons = new JPanel(new BorderLayout(2, 2));
-    private JButton jbAddCape = new JButton("Add Cape");
-    public JButton jbApply = new JButton("Add Skin");
+    private JButton jbAddCape = new JButton(mainFrame.languageModules.get("asf.jb.add_cape"));
+    public JButton jbApply = new JButton(mainFrame.languageModules.get("asf.jb.apply"));
     public AddSkinFrame() {
         this.setSize(500, 300);
-//        this.setIconImage(programIcon.getImage());
-        this.setTitle("MCSkinner");
+        this.setIconImage(mainFrame.appIcon.getImage());
+        this.setTitle(mainFrame.languageModules.get("asf.title.title"));
         this.setResizable(true);
         this.setLocationRelativeTo(null);
         this.setLayout(new BorderLayout(10, 10));

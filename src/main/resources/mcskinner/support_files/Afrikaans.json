@@ -1,0 +1,41 @@
+{
+  "mf.title.title": "MCSkinner: Maak nuwe skin-pack",
+  "mf.jb.new_skin_pack": "Maak nuwe skin-pack",
+
+
+  "mf.jm.settings": "Instellings",
+
+  "mf.jm.theme": "Gevoel",
+  "mf.mi.light": "Lig",
+  "mf.mi.dark": "Donker",
+  "mf.mi.sys_theme": "Gewone Sisteem Instelling",
+
+  "mf.jm.language": "Taal",
+  "mf.mi.english": "Engels",
+  "mf.mi.afrikaans": "Afrikaans",
+  "mf.mi.chinese_mandarin": "Chinese Mandaryns",
+
+  "mf.mi.default_save_loc": "Gewone stoor plek...",
+  "mf.mi.open_settings": "Maak Instellings oop",
+
+  "mf.jl.name": "Naam: ",
+  "mf.jl.description": "Beskrywing: ",
+  "mf.jl.author": "Outeur: ",
+  "mf.jl.version": "Weergawe: ",
+  "mf.jl.mc_version": "MC Weergawe: ",
+  "mf.jl.file_gen_path": "Plek van generasie: ",
+
+  "mf.jb.add_skin": "Sit skin by",
+  "mf.jb.apply": "Genereer Skin-Pack",
+
+
+  "asf.title.title": "MCSkinner: Sit skin by",
+
+  "asf.jl.name": "Naam: ",
+  "asf.jl.geo": "Meetkunde: ",
+  "asf.jl.texture": "Tekstuur: ",
+  "asf.jl.cape": "Mantel Tekstuur: ",
+
+  "asf.jb.add_cape": "Sit Mantel by",
+  "asf.jb.apply": "Sit skin by"
+}
