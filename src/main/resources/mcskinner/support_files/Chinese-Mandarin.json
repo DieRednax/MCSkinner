@@ -5,8 +5,12 @@
   "mf.jm.settings": "设置",
 
   "mf.jm.theme": "主题",
-  "mf.mi.light": "浅色",
-  "mf.mi.dark": "深色",
+  "mf.jm.light": "浅色",
+  "mf.mi.light": "默认",
+  "mf.mi.light_extra": "增强浅色",
+  "mf.jm.dark": "深色",
+  "mf.mi.dark": "默认",
+  "mf.mi.dark_extra": "增强深色",
   "mf.mi.sys_theme": "系统默认",
 
   "mf.jm.language": "语言",

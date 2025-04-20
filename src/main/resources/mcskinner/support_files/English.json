@@ -6,8 +6,12 @@
   "mf.jm.settings": "Settings",
 
   "mf.jm.theme": "Theme",
-  "mf.mi.light": "Light",
-  "mf.mi.dark": "Dark",
+  "mf.jm.light": "Light",
+  "mf.mi.light": "Default",
+  "mf.mi.light_extra": "Rich Light",
+  "mf.jm.dark": "Dark",
+  "mf.mi.dark": "Default",
+  "mf.mi.dark_extra": "Rich Dark",
   "mf.mi.sys_theme": "System Default",
 
   "mf.jm.language": "Language",

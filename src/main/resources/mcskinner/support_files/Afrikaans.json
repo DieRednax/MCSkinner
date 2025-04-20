@@ -6,8 +6,12 @@
   "mf.jm.settings": "Instellings",
 
   "mf.jm.theme": "Gevoel",
-  "mf.mi.light": "Lig",
-  "mf.mi.dark": "Donker",
+  "mf.jm.light": "Lig",
+  "mf.mi.light": "Gewone Lig",
+  "mf.mi.light_extra": "Ryk Lig",
+  "mf.jm.dark": "Donker",
+  "mf.mi.dark": "Gewone Donker",
+  "mf.mi.dark_extra": "Ryk Donker",
   "mf.mi.sys_theme": "Gewone Sisteem Instelling",
 
   "mf.jm.language": "Taal",

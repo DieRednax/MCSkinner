@@ -1,6 +1,11 @@
 package com.redfox.mcskinner.ui;
 
 import com.formdev.flatlaf.*;
+import com.formdev.flatlaf.intellijthemes.*;
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatArcDarkIJTheme;
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatAtomOneDarkIJTheme;
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatAtomOneLightIJTheme;
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubDarkIJTheme;
 import com.formdev.flatlaf.themes.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -42,8 +47,12 @@ public class MainFrame extends JFrame implements ActionListener {
     private JMenu jmSettings;// = new JMenu("Settings");
     private JMenuItem miOpenSettings;// = new JMenuItem("Open Settings");
     private JMenu jmTheme;// = new JMenu("Theme");
+    private JMenu jmLight;
     private JMenuItem miLight;// = new JMenuItem("Light");
+    private JMenuItem miLightExtra;
+    private JMenu jmDark;
     private JMenuItem miDark;// = new JMenuItem("Dark");
+    private JMenuItem miDarkExtra;
     private JMenuItem miSystemTheme;
     private JMenuItem miChooseDefaultSaveLoc;// = new JMenuItem("Default save location...");
     private JFileChooser fcChooseDefaultSaveLoc = new JFileChooser();
@@ -89,9 +98,19 @@ public class MainFrame extends JFrame implements ActionListener {
 
         String os = System.getProperty("os.name").toLowerCase();
         if (!(os.contains("mac") || os.contains("darwin"))) {
-            if (settings.get("theme").equals("light")) {
-                FlatLightLaf.setup();
-            } else FlatDarkLaf.setup();
+            switch (settings.get("theme")) {
+                case "light":
+                    FlatLightLaf.setup();
+                    break;
+                case "light_extra":
+                    FlatAtomOneLightIJTheme.setup();
+                    break;
+                case "dark":
+                    FlatDarkLaf.setup();
+                    break;
+                case "dark_extra":
+                    FlatOneDarkIJTheme.setup();
+            }
         } else {
             if (settings.get("theme").equals("light")) {
                 FlatMacLightLaf.setup();
@@ -103,8 +122,12 @@ public class MainFrame extends JFrame implements ActionListener {
         jmSettings = new JMenu(languageModules.get("mf.jm.settings"));
         miOpenSettings = new JMenuItem(languageModules.get("mf.mi.open_settings"));
         jmTheme = new JMenu(languageModules.get("mf.jm.theme"));
+        jmLight = new JMenu(languageModules.get("mf.jm.light"));
         miLight = new JMenuItem(languageModules.get("mf.mi.light"));
+        miLightExtra = new JMenuItem(languageModules.get("mf.mi.light_extra"));
+        jmDark = new JMenu(languageModules.get("mf.jm.dark"));
         miDark = new JMenuItem(languageModules.get("mf.mi.dark"));
+        miDarkExtra = new JMenuItem(languageModules.get("mf.mi.dark_extra"));
         miSystemTheme = new JMenuItem(languageModules.get("mf.mi.sys_theme"));
         miChooseDefaultSaveLoc = new JMenuItem(languageModules.get("mf.mi.default_save_loc"));
         jmLanguage = new JMenu(languageModules.get("mf.jm.language"));
@@ -195,10 +218,18 @@ public class MainFrame extends JFrame implements ActionListener {
         contentRoot.add("Home", jpNewSkinPack);
 
         miLight.addActionListener(this);
+        miLightExtra.addActionListener(this);
         miDark.addActionListener(this);
+        miDarkExtra.addActionListener(this);
         miSystemTheme.addActionListener(this);
-        jmTheme.add(miLight);
-        jmTheme.add(miDark);
+
+        jmLight.add(miLight);
+        jmLight.add(miLightExtra);
+        jmDark.add(miDark);
+        jmDark.add(miDarkExtra);
+
+        jmTheme.add(jmLight);
+        jmTheme.add(jmDark);
         jmTheme.add(miSystemTheme);
 
         miChooseDefaultSaveLoc.addActionListener(this);
@@ -250,8 +281,16 @@ public class MainFrame extends JFrame implements ActionListener {
             settings.put("theme", "light");
             updateSettingsJson(settings, "settings.json");
             settingsChangesMessage();
+        } else if (e.getSource() == miLightExtra) {
+            settings.put("theme", "light_extra");
+            updateSettingsJson(settings, "settings.json");
+            settingsChangesMessage();
         } else if (e.getSource() == miDark) {
             settings.put("theme", "dark");
+            updateSettingsJson(settings, "settings.json");
+            settingsChangesMessage();
+        } else if (e.getSource() == miDarkExtra) {
+            settings.put("theme", "dark_extra");
             updateSettingsJson(settings, "settings.json");
             settingsChangesMessage();
         } else if (e.getSource() == miSystemTheme) {
