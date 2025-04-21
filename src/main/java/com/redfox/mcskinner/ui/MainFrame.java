@@ -260,6 +260,8 @@ public class MainFrame extends JFrame implements ActionListener {
                             settings.put("language", "English");
                             info(this, "System default language unavailable.\nChoosing English instead");
                     }
+                    updateSettingsJson(settings, "settings.json");
+                    settingsChangesMessage();
                 }
             });
             jmLanguage.add(miTempLanguage);

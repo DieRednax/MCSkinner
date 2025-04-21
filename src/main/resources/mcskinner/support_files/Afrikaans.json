@@ -19,7 +19,7 @@
   "mf.mi.afrikaans": "Afrikaans",
   "mf.mi.chinese_mandarin": "Chinese Mandaryns",
 
-  "mf.mi.default_save_loc": "Gewone stoor plek...",
+  "mf.mi.default_save_loc": "Standaard stoorplek...",
   "mf.mi.open_settings": "Maak Instellings oop",
 
   "mf.jl.name": "Naam: ",
@@ -27,7 +27,7 @@
   "mf.jl.author": "Outeur: ",
   "mf.jl.version": "Weergawe: ",
   "mf.jl.mc_version": "MC Weergawe: ",
-  "mf.jl.file_gen_path": "Plek van generasie: ",
+  "mf.jl.file_gen_path": "Stoor by: ",
 
   "mf.jb.add_skin": "Sit skin by",
   "mf.jb.apply": "Genereer Skin-Pack",
