@@ -66,7 +66,7 @@ public class MainFrame extends JFrame implements ActionListener {
     private JPanel jpHomePanelE = new JPanel();
     private JButton jbNewSkinPack;// = new JButton("Create new SkinPack");
 
-    private JPanel jpCenterGrid = new JPanel(new GridLayout(6, 2));
+    private JPanel jpCenterGrid = new JPanel(new GridLayout(5, 2));
     private JLabel jlName;// = new JLabel("Name: ");
     private JLabel jlDescription;// = new JLabel("Description: ");
     private JLabel jlAuthor;// = new JLabel("Author: ");
@@ -142,7 +142,7 @@ public class MainFrame extends JFrame implements ActionListener {
         jbApply = new JButton(languageModules.get("mf.jb.apply"));
 
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setSize(700, 520);
+        this.setSize(700, 460);
         this.setIconImage(appIcon.getImage());
         this.setTitle("MCSkinner");
         this.setResizable(true);
@@ -152,8 +152,8 @@ public class MainFrame extends JFrame implements ActionListener {
         jbNewSkinPack.addActionListener(this);
         jbNewSkinPack.setPreferredSize(new Dimension(500, 70));
 
-        jpHomePanelN.setPreferredSize(new Dimension(100, 190));
-        jpHomePanelS.setPreferredSize(new Dimension(100, 190));
+        jpHomePanelN.setPreferredSize(new Dimension(100, 160));
+        jpHomePanelS.setPreferredSize(new Dimension(100, 160));
         jpHomePanelW.setPreferredSize(new Dimension(100, 190));
         jpHomePanelE.setPreferredSize(new Dimension(100, 190));
 
@@ -192,18 +192,18 @@ public class MainFrame extends JFrame implements ActionListener {
         jpCenterGrid.add(jlMCVersion);
         jpCenterGrid.add(jpMCVersion);
 
-        jpCenterGrid.add(jlFileGenPath);
-        jpCenterGrid.add(jpFileGenPath);
+//        jpCenterGrid.add(jlFileGenPath);
+//        jpCenterGrid.add(jpFileGenPath);
 
         jpCenterGrid.setVisible(true);
 
         jbAddSkin.addActionListener(this);
         jbApply.addActionListener(this);
 
-        jbAddSkin.setPreferredSize(new Dimension(1, 58));
-        jbApply.setPreferredSize(new Dimension(1, 58));
+        jbAddSkin.setPreferredSize(new Dimension(1, 68));
+        jbApply.setPreferredSize(new Dimension(1, 68));
 
-        jpLowButtons.setPreferredSize(new Dimension(50, 120));
+        jpLowButtons.setPreferredSize(new Dimension(50, 140));
         jpLowButtons.add(jbAddSkin, BorderLayout.NORTH);
         jpLowButtons.add(jbApply, BorderLayout.SOUTH);
 
