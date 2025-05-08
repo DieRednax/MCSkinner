@@ -14,6 +14,7 @@ import com.redfox.mcskinner.MCSkinner;
 import com.redfox.mcskinner.SkinPackGen;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,6 +30,7 @@ public class MainFrame extends JFrame implements ActionListener {
 
 
     private AddSkinFrame addSkinFrame;
+    private SaveAsFrame saveAsFrame;
 
     public InputStream openFileInputStream = MCSkinner.class.getResourceAsStream("/mcskinner/icons/file-open-2-64.png");
     public final ImageIcon openFileIcon  = new ImageIcon(openFileInputStream.readAllBytes());
@@ -39,6 +41,12 @@ public class MainFrame extends JFrame implements ActionListener {
 
     public HashMap<String, String> settings = new HashMap<>();
     public HashMap<String, String> languageModules = new HashMap<>();
+
+    private String name = "";
+    private String description = "";
+    private String author = "";
+    private String version = "";
+    private String mcVersion = "";
 
     private CardLayout cardLayout;
     private Container contentRoot;
@@ -192,8 +200,6 @@ public class MainFrame extends JFrame implements ActionListener {
         jpCenterGrid.add(jlMCVersion);
         jpCenterGrid.add(jpMCVersion);
 
-//        jpCenterGrid.add(jlFileGenPath);
-//        jpCenterGrid.add(jpFileGenPath);
 
         jpCenterGrid.setVisible(true);
 
@@ -390,22 +396,27 @@ public class MainFrame extends JFrame implements ActionListener {
                 skins.add(skin);
                 addSkinFrame.dispose();
             }
+        //change
         } else if (e.getSource() == jbApply) {
-            String version = tfVersion1.getText() + ", " + tfVersion2.getText() + ", " + tfVersion3.getText();
-            String mcVersion;
+            version = tfVersion1.getText() + ", " + tfVersion2.getText() + ", " + tfVersion3.getText();
             if (Integer.parseInt(tfMCVersion1.getText()) <= 1
                 && Integer.parseInt(tfMCVersion2.getText()) <= 21
                 && Integer.parseInt(tfMCVersion3.getText())  <= 71) {
                 mcVersion = tfMCVersion1.getText() + ", " + tfMCVersion2.getText() + ", " + tfMCVersion3.getText();
 
-
-                if (mainFrameCorrect(tfFileGenPath, "path of generation")
-                    && mainFrameCorrect(tfName, "skin-pack name")
+                if (mainFrameCorrect(tfName, "skin-pack name")
                     && mainFrameCorrect(tfDescription, "skin-pack description")
                     && mainFrameCorrect(tfAuthor, "skin-pack author")) {
+
+                    name = tfName.getText();
+                    description = tfDescription.getText();
+                    author = tfAuthor.getText();
+
+                    saveAsFrame = new SaveAsFrame();
+/*
                     SkinPackGen skinPackGen = new SkinPackGen(skins,
-                            tfName.getText(), tfAuthor.getText(),tfDescription.getText(),version, mcVersion,
-                            tfFileGenPath.getText());
+                            name, author, description, version, mcVersion,
+                            "temp");
 
                     String json = skinPackGen.genSkinsJSON();
                     System.out.println("skins.json: \n" + json + "\n");
@@ -423,10 +434,11 @@ public class MainFrame extends JFrame implements ActionListener {
                     cardLayout.next(contentRoot);
                     this.setTitle("MCSkinner");
 
-                    this.setSize(700, 500);
+                    this.setSize(700, 440);
+*/
                 }
             } else {
-                warning(this, "The MC Version must be 1 21 60 or lower");
+                warning(this, "The MC Version must be 1 21 70 or lower");
             }
         }
     }
@@ -486,5 +498,20 @@ public class MainFrame extends JFrame implements ActionListener {
             JOptionPane.showMessageDialog(this, "No language file found", "MCSkinner: error", JOptionPane.ERROR_MESSAGE);
             System.exit(1);
         }
+    }
+    public AddSkinFrame getAddSkinFrame() {
+        return addSkinFrame;
+    }
+
+    public String selectDir(JFileChooser fileSelector, String dialogTitle) {
+        fileSelector.setDialogTitle(dialogTitle);
+        fileSelector.setCurrentDirectory(new File(System.getProperty("user.home")));
+        fileSelector.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+        int response = fileSelector.showOpenDialog(this);
+        if (response == JFileChooser.APPROVE_OPTION) {
+            File selectedFileGenPath = fileSelector.getSelectedFile();
+            return selectedFileGenPath.getAbsolutePath();
+        } else return "> This can't be empty";
     }
 }

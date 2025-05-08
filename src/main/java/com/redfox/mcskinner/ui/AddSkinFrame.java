@@ -43,7 +43,7 @@ public class AddSkinFrame extends JFrame implements ActionListener {
         this.setIconImage(mainFrame.appIcon.getImage());
         this.setTitle(mainFrame.languageModules.get("asf.title.title"));
         this.setResizable(true);
-        this.setLocationRelativeTo(null);
+        this.setLocationRelativeTo(mainFrame);
         this.setLayout(new BorderLayout(10, 10));
 
         jpCenterGrid.add(jlName);
