@@ -9,7 +9,7 @@ import static com.redfox.mcskinner.MCSkinner.mainFrame;
 
 public class SaveAsFrame extends JFrame implements ActionListener {
     String selectedSaveType = "importMC";
-    String mcPackGenDir;
+    String strTFSelectedDirText;
 
     Container contentRoot;
     CardLayout cardLayout;
@@ -90,6 +90,7 @@ public class SaveAsFrame extends JFrame implements ActionListener {
             JPanel jpMiddlePanel = new JPanel();
             JButton jbApply = new JButton("Generate skin-pack");
             jbApply.addActionListener(mainFrame);
+            jbApply.setActionCommand("saveAsFrame.jbApply");
 
             jpNorthLabel.add(jlLabel);
 
@@ -103,6 +104,8 @@ public class SaveAsFrame extends JFrame implements ActionListener {
             JButton jbChoosePathOfGen = new JButton(mainFrame.openFileIcon);
             JTextField tfChoosePathOfGen = new JTextField("");
             JFileChooser fcChoosePathOfGen = new JFileChooser();
+
+            jbApply.addActionListener((ActionEvent e) -> strTFSelectedDirText = tfChoosePathOfGen.getText());
 
             switch (i) {
                 case 0:
@@ -160,5 +163,8 @@ public class SaveAsFrame extends JFrame implements ActionListener {
                     cardLayout.show(contentRoot, "saveD");
             }
         }
+    }
+    public String getStrTFSelectedDirText() {
+        return this.strTFSelectedDirText;
     }
 }

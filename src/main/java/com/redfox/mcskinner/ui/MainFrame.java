@@ -12,6 +12,8 @@ import com.google.gson.GsonBuilder;
 import com.jthemedetecor.OsThemeDetector;
 import com.redfox.mcskinner.MCSkinner;
 import com.redfox.mcskinner.SkinPackGen;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -20,10 +22,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.prefs.Preferences;
+import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class MainFrame extends JFrame implements ActionListener {
     private ArrayList<HashMap<String, String>> skins = new ArrayList<>();
@@ -413,32 +423,55 @@ public class MainFrame extends JFrame implements ActionListener {
                     author = tfAuthor.getText();
 
                     saveAsFrame = new SaveAsFrame();
-/*
-                    SkinPackGen skinPackGen = new SkinPackGen(skins,
-                            name, author, description, version, mcVersion,
-                            "temp");
 
-                    String json = skinPackGen.genSkinsJSON();
-                    System.out.println("skins.json: \n" + json + "\n");
-
-                    String lang = skinPackGen.genDefLangFile();
-                    System.out.println("en_US.lang: \n" + lang + "\n");
-
-                    String langJSON = skinPackGen.genLangJSON();
-                    System.out.println("languages.json: \n" + langJSON + "\n");
-
-                    String manifestJSON = skinPackGen.genManifestJSON();
-                    System.out.println("manifest.json: \n" + manifestJSON);
-                    skinPackGen.genSkinPackFiles();
-
-                    cardLayout.next(contentRoot);
-                    this.setTitle("MCSkinner");
-
-                    this.setSize(700, 440);
-*/
                 }
             } else {
                 warning(this, "The MC Version must be 1 21 70 or lower");
+            }
+        } else if (e.getActionCommand().equals("saveAsFrame.jbApply")) {
+            SkinPackGen skinPackGen = new SkinPackGen(skins,
+                    name, author, description, version, mcVersion,
+                    "temp");
+
+            String json = skinPackGen.genSkinsJSON();
+            System.out.println("skins.json: \n" + json + "\n");
+
+            String lang = skinPackGen.genDefLangFile();
+            System.out.println("en_US.lang: \n" + lang + "\n");
+
+            String langJSON = skinPackGen.genLangJSON();
+            System.out.println("languages.json: \n" + langJSON + "\n");
+
+            String manifestJSON = skinPackGen.genManifestJSON();
+            System.out.println("manifest.json: \n" + manifestJSON);
+            skinPackGen.genSkinPackFiles();
+
+            cardLayout.next(contentRoot);
+
+            switch (saveAsFrame.selectedSaveType) {
+                case "importMC":
+                    if (!System.getProperty("os.name").toLowerCase().contains("mac") || !System.getProperty("os.name").toLowerCase().contains("darwin")) {
+                        copyDir(new File("temp/" + name), new File(System.getProperty("user.home") + "\\AppData\\Local\\Packages\\Microsoft.MinecraftUWP_8wekyb3d8bbwe\\LocalState\\games\\com.mojang\\skin_packs\\" + name));
+                        System.out.println("Generated skin-pack at: " + System.getProperty("user.home") + "\\AppData\\Local\\Packages\\Microsoft.MinecraftUWP_8wekyb3d8bbwe\\LocalState\\games\\com.mojang\\skin_packs" + name);
+                    } else warning(saveAsFrame, "Minecraft bedrock is not support on Macos, so you cannot import this pack into the game");
+                    break;
+                case "exportMCP":
+                    String mcpackPath = saveAsFrame.getStrTFSelectedDirText();
+
+                    if (mcpackPath.toLowerCase().endsWith(".mcpack")) {
+                        zipFile(Paths.get("temp/" + name), Paths.get(saveAsFrame.getStrTFSelectedDirText()));
+                    } else {
+                        zipFile(Paths.get("temp/" + name), Paths.get(saveAsFrame.getStrTFSelectedDirText() + "/" + name + ".mcpack"));
+                    }
+                    break;
+                case "saveD":
+                    copyDir(new File("temp/" + name), new File(saveAsFrame.getStrTFSelectedDirText() + name));
+            }
+
+            try {
+                FileUtils.deleteDirectory(new File("temp"));
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
         }
     }
@@ -513,5 +546,40 @@ public class MainFrame extends JFrame implements ActionListener {
             File selectedFileGenPath = fileSelector.getSelectedFile();
             return selectedFileGenPath.getAbsolutePath();
         } else return "> This can't be empty";
+    }
+
+
+    private void copyFile(Path sourcePath, Path destinationPath) {
+        try {
+            Files.copy(sourcePath, destinationPath.resolve(sourcePath.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            System.err.println("Error copying file " + sourcePath + " to destination " + destinationPath + ": " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    private void copyDir(File sourceDir, File destDir) {
+        try {
+            FileUtils.copyDirectory(sourceDir, destDir);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private void zipFile(Path sourceDir, Path destFile) {
+        try(ZipOutputStream zipOutputStream = new ZipOutputStream(Files.newOutputStream(destFile))) {
+            Files.walk(sourceDir)
+                    .filter(path -> !Files.isDirectory(path))
+                    .forEach(path -> {
+                        ZipEntry zipEntry = new ZipEntry(sourceDir.relativize(path).toString());
+                        try {
+                            zipOutputStream.putNextEntry(zipEntry);
+                            Files.copy(path, zipOutputStream);
+                            zipOutputStream.closeEntry();
+                        } catch (IOException ex) {
+                            throw new UncheckedIOException(ex);
+                        }
+                    });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
