@@ -43,5 +43,17 @@
   "asf.jb.add_cape": "Sit Mantel by",
   "asf.jb.apply": "Sit skin by",
 
-  "saf.title.title": "Stoor As"
+  "saf.title.title": "Stoor As",
+
+  "saf.jr.import_mc": "Voeg by Minecraft",
+  "saf.jr.export_mcp": "Stoor as *.mcpack-lêer",
+  "saf.jr.save_d": "Stoor as gids",
+
+  "saf.jb.next": "Volgende >",
+  "saf.jb.back": "< Terug",
+  "saf.jb.apply": "Genereer skin-pack",
+
+  "saf.jl.label.imc": "Voeg by Minecraft",
+  "saf.jl.label.emcp": "Stoor as as .mcpack-lêer",
+  "saf.jl.label.sd": "Stoor as rou gids"
 }

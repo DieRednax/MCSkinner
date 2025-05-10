@@ -43,5 +43,18 @@
   "asf.jb.add_cape": "Add Cape",
   "asf.jb.apply": "Add Skin",
 
-  "saf.title.title": "Save As"
+
+  "saf.title.title": "Save As",
+
+  "saf.jr.import_mc": "Import to Minecraft",
+  "saf.jr.export_mcp": "Export to *.mcpack file",
+  "saf.jr.save_d": "Save to directory",
+
+  "saf.jb.next": "Next >",
+  "saf.jb.back": "< Back",
+  "saf.jb.apply": "Generate skin-pack",
+
+  "saf.jl.label.imc": "Import to Minecraft",
+  "saf.jl.label.emcp": "Export as .mcpack file",
+  "saf.jl.label.sd": "Save as raw folder"
 }

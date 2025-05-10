@@ -135,8 +135,6 @@ public class MainFrame extends JFrame implements ActionListener {
             } else FlatMacDarkLaf.setup();
         }
 
-        tfFileGenPath = new JTextField(settings.get("defaultsaveloc"));
-
         jmSettings = new JMenu(languageModules.get("mf.jm.settings"));
         miOpenSettings = new JMenuItem(languageModules.get("mf.mi.open_settings"));
         jmTheme = new JMenu(languageModules.get("mf.jm.theme"));
@@ -192,8 +190,8 @@ public class MainFrame extends JFrame implements ActionListener {
         jbSelctFileGenPath.addActionListener(this);
         jbSelctFileGenPath.setIcon(openFileIcon);
 
-        jpFileGenPath.add(tfFileGenPath, BorderLayout.CENTER);
-        jpFileGenPath.add(jbSelctFileGenPath, BorderLayout.EAST);
+//        jpFileGenPath.add(tfFileGenPath, BorderLayout.CENTER);
+//        jpFileGenPath.add(jbSelctFileGenPath, BorderLayout.EAST);
 
         jpCenterGrid.add(jlName);
         jpCenterGrid.add(tfName);
@@ -429,50 +427,7 @@ public class MainFrame extends JFrame implements ActionListener {
                 warning(this, "The MC Version must be 1 21 70 or lower");
             }
         } else if (e.getActionCommand().equals("saveAsFrame.jbApply")) {
-            SkinPackGen skinPackGen = new SkinPackGen(skins,
-                    name, author, description, version, mcVersion,
-                    "temp");
 
-            String json = skinPackGen.genSkinsJSON();
-            System.out.println("skins.json: \n" + json + "\n");
-
-            String lang = skinPackGen.genDefLangFile();
-            System.out.println("en_US.lang: \n" + lang + "\n");
-
-            String langJSON = skinPackGen.genLangJSON();
-            System.out.println("languages.json: \n" + langJSON + "\n");
-
-            String manifestJSON = skinPackGen.genManifestJSON();
-            System.out.println("manifest.json: \n" + manifestJSON);
-            skinPackGen.genSkinPackFiles();
-
-            cardLayout.next(contentRoot);
-
-            switch (saveAsFrame.selectedSaveType) {
-                case "importMC":
-                    if (!System.getProperty("os.name").toLowerCase().contains("mac") || !System.getProperty("os.name").toLowerCase().contains("darwin")) {
-                        copyDir(new File("temp/" + name), new File(System.getProperty("user.home") + "\\AppData\\Local\\Packages\\Microsoft.MinecraftUWP_8wekyb3d8bbwe\\LocalState\\games\\com.mojang\\skin_packs\\" + name));
-                        System.out.println("Generated skin-pack at: " + System.getProperty("user.home") + "\\AppData\\Local\\Packages\\Microsoft.MinecraftUWP_8wekyb3d8bbwe\\LocalState\\games\\com.mojang\\skin_packs" + name);
-                    } else warning(saveAsFrame, "Minecraft bedrock is not support on Macos, so you cannot import this pack into the game");
-                    break;
-                case "exportMCP":
-                    String mcpackPath = saveAsFrame.getStrTFSelectedDirText();
-
-                    if (mcpackPath.toLowerCase().endsWith(".mcpack")) {
-                        zipFile(Paths.get("temp/" + name), Paths.get(saveAsFrame.getStrTFSelectedDirText()));
-                    } else {
-                        zipFile(Paths.get("temp/" + name), Paths.get(saveAsFrame.getStrTFSelectedDirText() + "/" + name + ".mcpack"));
-                    }
-                    break;
-                case "saveD":
-                    copyDir(new File("temp/" + name), new File(saveAsFrame.getStrTFSelectedDirText() + name));
-            }
-
-            try {
-                FileUtils.deleteDirectory(new File("temp"));
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
         }
     }
     private void updateSettingsJson(HashMap<String, String> settings, String fileName) {
@@ -484,10 +439,10 @@ public class MainFrame extends JFrame implements ActionListener {
         }
     }
 
-    private void warning(Component parent, String message) {
+    public void warning(Component parent, String message) {
         JOptionPane.showMessageDialog(parent, message, "MCSkinner: warning", JOptionPane.WARNING_MESSAGE);
     }
-    private void info(Component parent, String message) {
+    public void info(Component parent, String message) {
         JOptionPane.showMessageDialog(parent, message, "MCSkinner: info", JOptionPane.INFORMATION_MESSAGE);
     }
 
@@ -580,6 +535,57 @@ public class MainFrame extends JFrame implements ActionListener {
                     });
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+    public void saveSkinPack() {
+        SkinPackGen skinPackGen = new SkinPackGen(skins,
+                name, author, description, version, mcVersion,
+                "temp");
+
+        String json = skinPackGen.genSkinsJSON();
+        System.out.println("skins.json: \n" + json + "\n");
+
+        String lang = skinPackGen.genDefLangFile();
+        System.out.println("en_US.lang: \n" + lang + "\n");
+
+        String langJSON = skinPackGen.genLangJSON();
+        System.out.println("languages.json: \n" + langJSON + "\n");
+
+        String manifestJSON = skinPackGen.genManifestJSON();
+        System.out.println("manifest.json: \n" + manifestJSON);
+        skinPackGen.genSkinPackFiles();
+
+        cardLayout.next(contentRoot);
+
+        switch (saveAsFrame.selectedSaveType) {
+            case "importMC":
+                if (!System.getProperty("os.name").toLowerCase().contains("mac") || !System.getProperty("os.name").toLowerCase().contains("darwin")) {
+                    copyDir(new File("temp/" + name), new File(System.getProperty("user.home") + "\\AppData\\Local\\Packages\\Microsoft.MinecraftUWP_8wekyb3d8bbwe\\LocalState\\games\\com.mojang\\skin_packs\\" + name));
+                    System.out.println("Generated skin-pack at: " + System.getProperty("user.home") + "\\AppData\\Local\\Packages\\Microsoft.MinecraftUWP_8wekyb3d8bbwe\\LocalState\\games\\com.mojang\\skin_packs" + name);
+                } else
+                    warning(saveAsFrame, "Minecraft bedrock is not supported on MacOS, so you cannot import this pack into the game");
+                saveAsFrame.dispose();
+                break;
+            case "exportMCP":
+                String mcpackPath = saveAsFrame.getStrTFSelectedDirText();
+
+                if (mcpackPath.toLowerCase().endsWith(".mcpack")) {
+                    zipFile(Paths.get("temp/" + name), Paths.get(saveAsFrame.getStrTFSelectedDirText()));
+                } else {
+                    zipFile(Paths.get("temp/" + name), Paths.get(saveAsFrame.getStrTFSelectedDirText() + "/" + name + ".mcpack"));
+                }
+
+                saveAsFrame.dispose();
+                break;
+            case "saveD":
+                copyDir(new File("temp/" + name), new File(saveAsFrame.getStrTFSelectedDirText() + "/" + name));
+                saveAsFrame.dispose();
+        }
+
+        try {
+            FileUtils.deleteDirectory(new File("temp"));
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 }

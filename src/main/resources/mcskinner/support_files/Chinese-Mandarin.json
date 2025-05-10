@@ -39,5 +39,19 @@
   "asf.jl.cape": "披风纹理：",
 
   "asf.jb.add_cape": "添加披风",
-  "asf.jb.apply": "添加皮肤"
+  "asf.jb.apply": "添加皮肤",
+
+  "saf.title.title": "另存为",
+
+  "saf.jr.import_mc": "导入到 Minecraft",
+  "saf.jr.export_mcp": "导出为 *.mcpack 文件",
+  "saf.jr.save_d": "保存为文件夹",
+
+  "saf.jb.next": "下一步 >",
+  "saf.jb.back": "< 上一步",
+  "saf.jb.apply": "生成皮肤包",
+
+  "saf.jl.label.imc": "导入到 Minecraft",
+  "saf.jl.label.emcp": "导出为 .mcpack 文件",
+  "saf.jl.label.sd": "保存为原始文件夹"
 }

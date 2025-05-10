@@ -9,7 +9,7 @@ import static com.redfox.mcskinner.MCSkinner.mainFrame;
 
 public class SaveAsFrame extends JFrame implements ActionListener {
     String selectedSaveType = "importMC";
-    String strTFSelectedDirText;
+    String strTFSelectedDirText = "";
 
     Container contentRoot;
     CardLayout cardLayout;
@@ -30,6 +30,12 @@ public class SaveAsFrame extends JFrame implements ActionListener {
     JPanel jpSaveDirectory = new JPanel(new BorderLayout(10, 10));
 
     public SaveAsFrame() {
+        jrImportMC = new JRadioButton(mainFrame.languageModules.get("saf.jr.import_mc"));
+        jrExportMCPack = new JRadioButton(mainFrame.languageModules.get("saf.jr.export_mcp"));
+        jrSaveDirectory = new JRadioButton(mainFrame.languageModules.get("saf.jr.save_d"));
+
+        jbNext = new JButton(mainFrame.languageModules.get("saf.jb.next"));
+
         this.setSize(500, 300);
         this.setIconImage(mainFrame.appIcon.getImage());
         this.setTitle(mainFrame.languageModules.get("saf.title.title"));
@@ -85,12 +91,12 @@ public class SaveAsFrame extends JFrame implements ActionListener {
             JPanel jpSouthButtons = new JPanel(new GridLayout(1, 3));
             JPanel jpSouthNorth = new JPanel();
             jpSouthNorth.setPreferredSize(new Dimension(100, 50));
-            JButton jbBack = new JButton("< Back");
+            JButton jbBack = new JButton(mainFrame.languageModules.get("saf.jb.back"));
             jbBack.addActionListener((ActionEvent e) -> cardLayout.show(contentRoot, "chooseSaveType"));
             JPanel jpMiddlePanel = new JPanel();
-            JButton jbApply = new JButton("Generate skin-pack");
-            jbApply.addActionListener(mainFrame);
-            jbApply.setActionCommand("saveAsFrame.jbApply");
+            JButton jbApply = new JButton(mainFrame.languageModules.get("saf.jb.apply"));
+//            jbApply.addActionListener(mainFrame);
+//            jbApply.setActionCommand("saveAsFrame.jbApply");
 
             jpNorthLabel.add(jlLabel);
 
@@ -102,21 +108,31 @@ public class SaveAsFrame extends JFrame implements ActionListener {
             jpSouth.add(jpSouthNorth, BorderLayout.NORTH);
 
             JButton jbChoosePathOfGen = new JButton(mainFrame.openFileIcon);
-            JTextField tfChoosePathOfGen = new JTextField("");
+            JTextField tfChoosePathOfGen = new JTextField(mainFrame.settings.get("defaultsaveloc"));
             JFileChooser fcChoosePathOfGen = new JFileChooser();
 
-            jbApply.addActionListener((ActionEvent e) -> strTFSelectedDirText = tfChoosePathOfGen.getText());
+            jbApply.addActionListener((ActionEvent e) -> {
+                strTFSelectedDirText = tfChoosePathOfGen.getText();
+
+                if (selectedSaveType.equals("importMC")) {
+                    mainFrame.saveSkinPack();
+                } else {
+                    if (saveAsFrameCorrect(strTFSelectedDirText, "path of generation")) {
+                        mainFrame.saveSkinPack();
+                    }
+                }
+            });
 
             switch (i) {
                 case 0:
-                    jlLabel.setText("Import to Minecraft");
+                    jlLabel.setText(mainFrame.languageModules.get("saf.jl.label.imc"));
 
                     jpImportMC.add(jpCenterBorder, BorderLayout.CENTER);
                     jpImportMC.add(jpNorthLabel, BorderLayout.NORTH);
                     jpImportMC.add(jpSouth, BorderLayout.SOUTH);
                     break;
                 case 1:
-                    jlLabel.setText("Export as .mcpack file");
+                    jlLabel.setText(mainFrame.languageModules.get("saf.jl.label.emcp"));
 
                     jbChoosePathOfGen.addActionListener((ActionEvent e) -> {
                          tfChoosePathOfGen.setText(mainFrame.getAddSkinFrame().selectFile(fcChoosePathOfGen, "MCSkinner: Choose path of generation", "*.mcpack", "mcpack"));
@@ -129,7 +145,7 @@ public class SaveAsFrame extends JFrame implements ActionListener {
                     jpExportMCPack.add(jpSouth, BorderLayout.SOUTH);
                     break;
                 case 2:
-                    jlLabel.setText("Save as raw folder");
+                    jlLabel.setText(mainFrame.languageModules.get("saf.jl.label.sd"));
 
                     jbChoosePathOfGen.addActionListener((ActionEvent e) -> {
                         tfChoosePathOfGen.setText(mainFrame.selectDir(fcChoosePathOfGen, "MCSkinner: Choose path of generation"));
@@ -166,5 +182,13 @@ public class SaveAsFrame extends JFrame implements ActionListener {
     }
     public String getStrTFSelectedDirText() {
         return this.strTFSelectedDirText;
+    }
+    private boolean saveAsFrameCorrect(String str, String strWarnName) {
+        if (!(str.equals("> This can't be empty") || str.isEmpty())) {
+            return true;
+        } else {
+            mainFrame.warning(this, "You must insert a " + strWarnName);
+            return false;
+        }
     }
 }
