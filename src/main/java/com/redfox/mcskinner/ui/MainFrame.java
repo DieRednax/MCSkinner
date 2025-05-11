@@ -41,6 +41,7 @@ public class MainFrame extends JFrame implements ActionListener {
 
     private AddSkinFrame addSkinFrame;
     private SaveAsFrame saveAsFrame;
+    private SettingsFrame settingsFrame;
 
     public InputStream openFileInputStream = MCSkinner.class.getResourceAsStream("/mcskinner/icons/file-open-2-64.png");
     public final ImageIcon openFileIcon  = new ImageIcon(openFileInputStream.readAllBytes());
@@ -120,13 +121,13 @@ public class MainFrame extends JFrame implements ActionListener {
                 case "light":
                     FlatLightLaf.setup();
                     break;
-                case "light_extra":
+                case "rich_light":
                     FlatAtomOneLightIJTheme.setup();
                     break;
                 case "dark":
                     FlatDarkLaf.setup();
                     break;
-                case "dark_extra":
+                case "rich_dark":
                     FlatOneDarkIJTheme.setup();
             }
         } else {
@@ -247,6 +248,7 @@ public class MainFrame extends JFrame implements ActionListener {
         jmTheme.add(miSystemTheme);
 
         miChooseDefaultSaveLoc.addActionListener(this);
+        miOpenSettings.addActionListener(this);
 
         languages.add("System Default");
         languages.add("English");
@@ -298,7 +300,7 @@ public class MainFrame extends JFrame implements ActionListener {
             updateSettingsJson(settings, "settings.json");
             settingsChangesMessage();
         } else if (e.getSource() == miLightExtra) {
-            settings.put("theme", "light_extra");
+            settings.put("theme", "rich_light");
             updateSettingsJson(settings, "settings.json");
             settingsChangesMessage();
         } else if (e.getSource() == miDark) {
@@ -306,7 +308,7 @@ public class MainFrame extends JFrame implements ActionListener {
             updateSettingsJson(settings, "settings.json");
             settingsChangesMessage();
         } else if (e.getSource() == miDarkExtra) {
-            settings.put("theme", "dark_extra");
+            settings.put("theme", "rich_dark");
             updateSettingsJson(settings, "settings.json");
             settingsChangesMessage();
         } else if (e.getSource() == miSystemTheme) {
@@ -337,6 +339,9 @@ public class MainFrame extends JFrame implements ActionListener {
             settings.put("defaultsaveloc", defaultSaveLoc);
             updateSettingsJson(settings, "settings.json");
             settingsChangesMessage();
+        } else if (e.getSource() == miOpenSettings) {
+            settingsFrame = new SettingsFrame();
+
         } else if (e.getSource() == jbNewSkinPack) {
             cardLayout.next(contentRoot);
             this.setTitle(languageModules.get("mf.title.title"));
@@ -430,7 +435,7 @@ public class MainFrame extends JFrame implements ActionListener {
 
         }
     }
-    private void updateSettingsJson(HashMap<String, String> settings, String fileName) {
+    public void updateSettingsJson(HashMap<String, String> settings, String fileName) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         try (FileWriter fw = new FileWriter(fileName)) {
             gson.toJson(settings, fw);

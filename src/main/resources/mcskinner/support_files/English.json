@@ -56,5 +56,23 @@
 
   "saf.jl.label.imc": "Import to Minecraft",
   "saf.jl.label.emcp": "Export as .mcpack file",
-  "saf.jl.label.sd": "Save as raw folder"
+  "saf.jl.label.sd": "Save as raw folder",
+
+  "sf.title.title": "Settings",
+
+  "sf.jb.cancel": "Cancel",
+  "sf.jb.apply": "Ok",
+
+  "sf.jl.appearance": "Appearance",
+  "sf.jl.language": "Language",
+  "sf.jl.other": "Other",
+
+  "sf.tn.appearance": "Appearance",
+  "sf.tn.language": "Language",
+  "sf.tn.other": "Other",
+
+  "sf.jl.theme": "Theme",
+
+
+  "sf.jb.reset": "Reset"
 }
