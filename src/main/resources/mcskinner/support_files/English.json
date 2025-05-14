@@ -72,6 +72,10 @@
   "sf.tn.other": "Other",
 
   "sf.jl.theme": "Theme",
+  "sf.jl.font": "Font",
+  "sf.jl.text_size": "Text Size",
+
+  "sf.jl.gen_as_cur_lang": "Generate pack as current language",
 
 
   "sf.jb.reset": "Reset"

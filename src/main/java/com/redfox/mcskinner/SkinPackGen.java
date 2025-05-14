@@ -20,9 +20,11 @@ public class SkinPackGen {
     private String namePref;
     private ArrayList<String> skinNames;
     private ArrayList<String> images;
+    private String langFileName;
     public SkinPackGen(ArrayList<HashMap<String, String>> skins,
                        String name, String author, String description, String version, String mcVersion,
-                       String genDirectory) {
+                       String genDirectory,
+                       String langFileName) {
         this.skins = skins;
         this.name = name;
         this.author = author;
@@ -34,6 +36,8 @@ public class SkinPackGen {
         this.namePref = "RF_mcs__nr_" + name.replaceAll("\\s", "_").substring(0, 3);
         this.skinNames = new ArrayList<>();
         this.images = new ArrayList<>();
+
+        this.langFileName = langFileName;
     }
     public void genSkinPackFiles() {
         String skinsJSON = genSkinsJSON();
@@ -43,7 +47,7 @@ public class SkinPackGen {
 
         File skinsJSONF = new File(genDirectory + "/" + name + "/skins.json");
         File langJSONF = new File(genDirectory + "/" + name + "/texts/languages.json");
-        File defLangF = new File(genDirectory + "/" + name + "/texts/en_US.lang");
+        File defLangF = new File(genDirectory + "/" + name + "/texts/" + langFileName);
         File manifestJSONF = new File(genDirectory + "/" + name + "/manifest.json");
 
         writeFile(skinsJSON, skinsJSONF);
@@ -187,10 +191,7 @@ public class SkinPackGen {
         return langFile.toString();
     }
     public String genLangJSON() {
-        return """
-                [
-                \t"en_US"
-                ]""";
+        return " [\n\t\"" + langFileName.replaceAll("\\.lang", "") + "\"\n]";
     }
 
     private void writeFile(String input, File file) {

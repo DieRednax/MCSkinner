@@ -21,6 +21,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -291,6 +292,11 @@ public class MainFrame extends JFrame implements ActionListener {
         mbMain.add(jmSettings);
 
         this.setJMenuBar(mbMain);
+
+        for (Component jTextComponent : getAllLabels(contentRoot)) {
+            jTextComponent.setFont(new Font(settings.get("font"), Font.PLAIN, Integer.parseInt(settings.get("size"))));
+        }
+
         this.setVisible(true);
     }
     @Override
@@ -475,6 +481,9 @@ public class MainFrame extends JFrame implements ActionListener {
             settings.put("theme", "light");
             settings.put("defaultsaveloc", "");
             settings.put("language", "English");
+            settings.put("font", "Open Sans");
+            settings.put("size", "12");
+            settings.put("gen_as_cur_lang", "false");
             updateSettingsJson(settings, "settings.json");
         }
 
@@ -494,6 +503,9 @@ public class MainFrame extends JFrame implements ActionListener {
     }
     public AddSkinFrame getAddSkinFrame() {
         return addSkinFrame;
+    }
+    public SettingsFrame getSettingsFrame() {
+        return settingsFrame;
     }
 
     public String selectDir(JFileChooser fileSelector, String dialogTitle) {
@@ -543,9 +555,18 @@ public class MainFrame extends JFrame implements ActionListener {
         }
     }
     public void saveSkinPack() {
+        String langFileName;
+        if (settings.get("gen_as_cur_lang").equals("true")) {
+            langFileName = switch (settings.get("language")) {
+                case "Afrikaans" -> "af_ZA.lang";
+                case "Chinese-Mandarin" -> "zh_CN.lang";
+                default -> "en_US.lang";
+            };
+        } else langFileName = "en_US.lang";
+
         SkinPackGen skinPackGen = new SkinPackGen(skins,
                 name, author, description, version, mcVersion,
-                "temp");
+                "temp", langFileName);
 
         String json = skinPackGen.genSkinsJSON();
         System.out.println("skins.json: \n" + json + "\n");
@@ -591,6 +612,34 @@ public class MainFrame extends JFrame implements ActionListener {
             FileUtils.deleteDirectory(new File("temp"));
         } catch (IOException ex) {
             ex.printStackTrace();
+        }
+    }
+
+    public ArrayList<Component> getAllLabels(Container container) {
+        ArrayList<Component> jTextComponents = new ArrayList<>();
+        Component[] components = container.getComponents();
+
+        for (Component component : components) {
+            if (hasText(component)) {
+                jTextComponents.add(component);
+//            } else if (component instanceof JTabbedPane || component instanceof JComboBox<?>) {
+//                jTextComponents.add(component);
+            } else if (component instanceof Container) {
+                jTextComponents.addAll(getAllLabels((Container) component));
+            }
+        }
+
+        return jTextComponents;
+    }
+    private boolean hasText(Component component) {
+        try {
+            // Check if the component has a getText() method and returns non-null, non-empty string
+            Method getTextMethod = component.getClass().getMethod("getText");
+            Object result = getTextMethod.invoke(component);
+            return result instanceof String && !((String) result).isEmpty();
+        } catch (Exception e) {
+            // getText doesn't exist or isn't accessible – ignore
+            return false;
         }
     }
 }

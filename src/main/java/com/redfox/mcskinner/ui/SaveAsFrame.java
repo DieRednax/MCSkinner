@@ -159,6 +159,10 @@ public class SaveAsFrame extends JFrame implements ActionListener {
             }
         }
 
+        for (Component jTextComponent : mainFrame.getAllLabels(contentRoot)) {
+            jTextComponent.setFont(new Font(mainFrame.settings.get("font"), Font.PLAIN, Integer.parseInt(mainFrame.settings.get("size"))));
+        }
+
         this.setVisible(true);
     }
     @Override

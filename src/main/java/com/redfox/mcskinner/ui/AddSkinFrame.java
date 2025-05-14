@@ -76,6 +76,11 @@ public class AddSkinFrame extends JFrame implements ActionListener {
 
         this.add(jpLowButtons, BorderLayout.SOUTH);
         this.add(jpCenterGrid, BorderLayout.CENTER);
+
+        for (Component jTextComponent : mainFrame.getAllLabels(this)) {
+            jTextComponent.setFont(new Font(mainFrame.settings.get("font"), Font.PLAIN, Integer.parseInt(mainFrame.settings.get("size"))));
+        }
+
         this.setVisible(true);
     }
     @Override
