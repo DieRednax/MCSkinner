@@ -53,5 +53,28 @@
 
   "saf.jl.label.imc": "导入到 Minecraft",
   "saf.jl.label.emcp": "导出为 .mcpack 文件",
-  "saf.jl.label.sd": "保存为原始文件夹"
+  "saf.jl.label.sd": "保存为原始文件夹",
+
+
+  "sf.title.title": "设置",
+
+  "sf.jb.cancel": "取消",
+  "sf.jb.apply": "确定",
+
+  "sf.jl.appearance": "外观",
+  "sf.jl.language": "语言",
+  "sf.jl.other": "其他",
+
+  "sf.tn.appearance": "外观",
+  "sf.tn.language": "语言",
+  "sf.tn.other": "其他",
+
+  "sf.jl.theme": "主题",
+  "sf.jl.font": "字体",
+  "sf.jl.text_size": "文字大小",
+
+  "sf.jl.gen_as_cur_lang": "以当前语言生成皮肤包",
+
+  "sf.jb.reset": "重置"
+
 }

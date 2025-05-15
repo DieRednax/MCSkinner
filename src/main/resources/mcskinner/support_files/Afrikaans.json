@@ -55,5 +55,28 @@
 
   "saf.jl.label.imc": "Voeg by Minecraft",
   "saf.jl.label.emcp": "Stoor as as .mcpack-lêer",
-  "saf.jl.label.sd": "Stoor as rou gids"
+  "saf.jl.label.sd": "Stoor as rou gids",
+
+
+  "sf.title.title": "Instellings",
+
+  "sf.jb.cancel": "Kanselleer",
+  "sf.jb.apply": "OK",
+
+  "sf.jl.appearance": "Voorkoms",
+  "sf.jl.language": "Taal",
+  "sf.jl.other": "Ander",
+
+  "sf.tn.appearance": "Voorkoms",
+  "sf.tn.language": "Taal",
+  "sf.tn.other": "Ander",
+
+  "sf.jl.theme": "Gevoel",
+  "sf.jl.font": "Lettertipe",
+  "sf.jl.text_size": "Teks Grootte",
+
+  "sf.jl.gen_as_cur_lang": "Genereer skin-pack in huidige taal",
+
+  "sf.jb.reset": "Herstel"
+
 }
