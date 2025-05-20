@@ -486,6 +486,17 @@ public class MainFrame extends JFrame implements ActionListener {
         } else if (e.getSource() == miImportSkinpack) {
             cardLayout.show(contentRoot, "ImportSkinPack");
 
+            switch (settings.get("defaultimporttype")) {
+                case "importMC":
+                    jrImportMC.setSelected(true);
+                    break;
+                case "importMCP":
+                    jrImportMCP.setSelected(true);
+                    break;
+                case "importD":
+                    jrImportD.setSelected(true);
+            }
+
             SwingUtilities.updateComponentTreeUI(this);
         } else if (e.getSource() == jrImportMC) {
             importType = "importMC";
@@ -687,6 +698,7 @@ public class MainFrame extends JFrame implements ActionListener {
             settings.put("font", "Open Sans");
             settings.put("size", "12");
             settings.put("gen_as_cur_lang", "false");
+            settings.put("defaultimporttype", "");
             updateSettingsJson(settings, "settings.json");
         }
 

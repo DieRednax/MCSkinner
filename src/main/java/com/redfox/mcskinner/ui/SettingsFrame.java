@@ -23,12 +23,18 @@ public class SettingsFrame extends JFrame implements ActionListener {
             "Algerian", "Blackadder ITC",
             "Minecraft"
     };
-    String [] languages = {
+    String[] languages = {
             "English",
             "Afrikaans",
             "Chinese-Mandarin"
     };
     boolean generateAsCurrentLang = false;
+    String[] importTypes = {
+            languageModule("sf.cb_i.import_mc"),
+            languageModule("sf.cb_i.import_mcp"),
+            languageModule("sf.cb_i.import_d"),
+            languageModule("sf.cb_i_importT_none")
+    };
 
     JButton jbCancel = new JButton(languageModule("sf.jb.cancel"));
     JButton jbApply = new JButton(languageModule("sf.jb.apply"));
@@ -92,6 +98,10 @@ public class SettingsFrame extends JFrame implements ActionListener {
     JFileChooser fcDefaultSaveLoc = new JFileChooser();
     JButton jbDefaultSaveLocReset = new JButton(languageModule("sf.jb.reset"));
 
+    JLabel jlDefaultImportType = new JLabel(languageModule("sf.jl.default_import_type"));
+    JComboBox<String> cbDefaultImportType = new JComboBox<>(importTypes);
+    JButton jbDefaultImportTypeReset = new JButton(languageModule("sf.jb.reset"));
+
     public SettingsFrame() {
         this.setSize(600, 360);
         this.setIconImage(mainFrame.appIcon.getImage());
@@ -112,17 +122,10 @@ public class SettingsFrame extends JFrame implements ActionListener {
         jcGenerateAsCurrentLang.addActionListener(this);
 
         switch (mainFrame.settings.get("theme")) {
-            case "rich_light":
-                cbTheme.setSelectedIndex(1);
-                break;
-            case "dark":
-                cbTheme.setSelectedIndex(2);
-                break;
-            case "rich_dark":
-                cbTheme.setSelectedIndex(3);
-                break;
-            default:
-                cbTheme.setSelectedIndex(0);
+            case "rich_light" -> cbTheme.setSelectedIndex(1);
+            case "dark" -> cbTheme.setSelectedIndex(2);
+            case "rich_dark" -> cbTheme.setSelectedIndex(3);
+            default -> cbTheme.setSelectedIndex(0);
         }
         boolean fontsIMatch = false;
         for (int i = 0; i < fonts.length; i++) {
@@ -137,19 +140,20 @@ public class SettingsFrame extends JFrame implements ActionListener {
         jsTextSize.setValue(Integer.parseInt(mainFrame.settings.get("size")));
 
         switch (mainFrame.settings.get("language")) {
-            case "Afrikaans":
-                cbSelectLanguage.setSelectedIndex(1);
-                break;
-            case "Chinese-Mandarin":
-                cbSelectLanguage.setSelectedIndex(2);
-                break;
-            default:
-                cbSelectLanguage.setSelectedIndex(0);
+            case "Afrikaans" -> cbSelectLanguage.setSelectedIndex(1);
+            case "Chinese-Mandarin" -> cbSelectLanguage.setSelectedIndex(2);
+            default -> cbSelectLanguage.setSelectedIndex(0);
         }
         jcGenerateAsCurrentLang.setSelected(Boolean.parseBoolean(mainFrame.settings.get("gen_as_cur_lang")));
         generateAsCurrentLang = Boolean.parseBoolean(mainFrame.settings.get("gen_as_cur_lang"));
 
         tfDefaultSaveLoc.setText(mainFrame.settings.get("defaultsaveloc"));
+        switch (mainFrame.settings.get("defaultimporttype")) {
+            case "importMC" -> cbDefaultImportType.setSelectedIndex(0);
+            case "importMCP" -> cbDefaultImportType.setSelectedIndex(1);
+            case "importD" -> cbDefaultImportType.setSelectedIndex(2);
+            default -> cbDefaultImportType.setSelectedIndex(3);
+        }
 
         jpAppearanceC.add(jlTheme);
         jpAppearanceC.add(cbTheme);
@@ -171,6 +175,9 @@ public class SettingsFrame extends JFrame implements ActionListener {
         jpOtherC.add(jlDefaultSaveLoc);
         jpOtherC.add(jpDefaultSaveLoc);
         jpOtherE.add(jbDefaultSaveLocReset);
+        jpOtherC.add(jlDefaultImportType);
+        jpOtherC.add(cbDefaultImportType);
+        jpOtherE.add(jbDefaultImportTypeReset);
 
         jbThemeReset.addActionListener(this);
         jbFontReset.addActionListener(this);
@@ -178,6 +185,7 @@ public class SettingsFrame extends JFrame implements ActionListener {
         jbSelectLanguageReset.addActionListener(this);
         jbGenerateAsCurrentLangReset.addActionListener(this);
         jbDefaultSaveLocReset.addActionListener(this);
+        jbDefaultImportTypeReset.addActionListener(this);
 
         jpAppearanceN.add(jlAppearance);
         jpLanguageN.add(jlLanguage);
@@ -185,7 +193,7 @@ public class SettingsFrame extends JFrame implements ActionListener {
 
         jpAppearanceS.setPreferredSize(new Dimension(0, 61)); // h - 62 -> add new setting
         jpLanguageS.setPreferredSize(new Dimension(0, 123)); // h - 62 -> add new setting
-        jpOtherS.setPreferredSize(new Dimension(0, 185)); // h - 62 -> add new setting
+        jpOtherS.setPreferredSize(new Dimension(0, 123)); // h - 62 -> add new setting
 
         jpAppearanceE.setPreferredSize(new Dimension(65, 0));
         jpLanguageE.setPreferredSize(new Dimension(65, 0));
@@ -240,7 +248,11 @@ public class SettingsFrame extends JFrame implements ActionListener {
             generateAsCurrentLang = jcGenerateAsCurrentLang.isSelected();
         } else if (e.getSource() == jbDefaultSaveLocReset) {
             tfDefaultSaveLoc.setText("");
-        } else if (e.getSource() == jbDefaultSaveLoc) {
+        } else if (e.getSource() == jbDefaultImportTypeReset) {
+            cbDefaultImportType.setSelectedIndex(3);
+        }
+
+        else if (e.getSource() == jbDefaultSaveLoc) {
             tfDefaultSaveLoc.setText(mainFrame.selectDir(fcDefaultSaveLoc, "MCSkinner: Choose default path of generation"));
         } else if (e.getSource() == jbCancel) {
             this.dispose();
@@ -258,6 +270,12 @@ public class SettingsFrame extends JFrame implements ActionListener {
             mainFrame.settings.put("language", languages[cbSelectLanguage.getSelectedIndex()]);
             mainFrame.settings.put("gen_as_cur_lang", Boolean.toString(generateAsCurrentLang));
             mainFrame.settings.put("defaultsaveloc", tfDefaultSaveLoc.getText());
+            mainFrame.settings.put("defaultimporttype", switch (cbDefaultImportType.getSelectedIndex()) {
+                case 0 -> "importMC";
+                case 1 -> "importMCP";
+                case 2 -> "importD";
+                default -> "";
+            });
 
             mainFrame.updateSettingsJson(mainFrame.settings, "settings.json");
             this.dispose();

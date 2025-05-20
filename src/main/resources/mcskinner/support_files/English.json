@@ -94,7 +94,12 @@
   "sf.jl.text_size": "Text Size",
 
   "sf.jl.gen_as_cur_lang": "Generate pack as current language",
+  "sf.jl.default_import_type": "Default import type",
 
+  "sf.cb_i.import_mc": "Import into minecraft",
+  "sf.cb_i.import_mcp": "Import to .mcpack file",
+  "sf.cb_i.import_d": "Import to a raw directory",
+  "sf.cb_i_importT_none": "None",
 
   "sf.jb.reset": "Reset"
 }
