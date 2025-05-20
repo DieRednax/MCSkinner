@@ -113,4 +113,15 @@ public class AddSkinFrame extends JFrame implements ActionListener {
             return selectedFileGenPath.getAbsolutePath();
         } else return "> This can't be empty";
     }
+    public static <T extends JFrame> String selectFileStatic(T parent, JFileChooser fileSelector, String dialogTitle, String fileExtensionFilterDescription, String fileExtensionFilterExtension) {
+        fileSelector.setDialogTitle(dialogTitle);
+        fileSelector.setCurrentDirectory(new File(System.getProperty("user.home")));
+        fileSelector.setFileFilter(new FileNameExtensionFilter(fileExtensionFilterDescription, fileExtensionFilterExtension));
+
+        int response = fileSelector.showOpenDialog(parent);
+        if (response == JFileChooser.APPROVE_OPTION) {
+            File selectedFileGenPath = fileSelector.getSelectedFile();
+            return selectedFileGenPath.getAbsolutePath();
+        } else return "> This can't be empty";
+    }
 }

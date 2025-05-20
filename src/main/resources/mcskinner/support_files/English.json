@@ -3,7 +3,11 @@
   "mf.jb.new_skin_pack": "Create new skin-pack",
 
 
+  "mf.jm.file": "File",
   "mf.jm.settings": "Settings",
+
+  "mf.mi.new_skinpack": "New Skin-pack",
+  "mf.mi.import_skinpack": "Import Skin-pack",
 
   "mf.jm.theme": "Theme",
   "mf.jm.light": "Light",
@@ -21,6 +25,20 @@
 
   "mf.mi.default_save_loc": "Default save location...",
   "mf.mi.open_settings": "Open Settings",
+
+  "mf.jr.import_mc": "Import from minecraft",
+  "mf.jr.import_mcp": "Import from .mcpack file",
+  "mf.jr.import_d": "Import from raw directory",
+  "mf.jb.isp_next": "Next >",
+
+  "mf.jb.isp_back": "< Back",
+  "mf.jb.isp_import": "Import to MCSkinner",
+
+  "mf.jl.import_mc.label": "Import from minecraft",
+  "mf.jl.import_mcp.label": "Import from .mcpack file",
+  "mf.jl.import_d.label": "Import from raw folder",
+
+  "mf.jb.choose_in_game_skinpack": "Choose skin-pack",
 
   "mf.jl.name": "Name: ",
   "mf.jl.description": "Description: ",

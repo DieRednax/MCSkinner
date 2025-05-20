@@ -2,10 +2,7 @@ package com.redfox.mcskinner.ui;
 
 import com.formdev.flatlaf.*;
 import com.formdev.flatlaf.intellijthemes.*;
-import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatArcDarkIJTheme;
-import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatAtomOneDarkIJTheme;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatAtomOneLightIJTheme;
-import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubDarkIJTheme;
 import com.formdev.flatlaf.themes.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -13,7 +10,6 @@ import com.jthemedetecor.OsThemeDetector;
 import com.redfox.mcskinner.MCSkinner;
 import com.redfox.mcskinner.SkinPackGen;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -27,17 +23,17 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.prefs.Preferences;
+import java.util.*;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 public class MainFrame extends JFrame implements ActionListener {
     private ArrayList<HashMap<String, String>> skins = new ArrayList<>();
+    private String importType = "importMCP";
 
 
     private AddSkinFrame addSkinFrame;
@@ -64,6 +60,9 @@ public class MainFrame extends JFrame implements ActionListener {
     private Container contentRoot;
 
     private JMenuBar mbMain = new JMenuBar();
+    private JMenu jmFile;
+    private JMenuItem miNewSkinpack;
+    private JMenuItem miImportSkinpack;
     private JMenu jmSettings;// = new JMenu("Settings");
     private JMenuItem miOpenSettings;// = new JMenuItem("Open Settings");
     private JMenu jmTheme;// = new JMenu("Theme");
@@ -85,6 +84,22 @@ public class MainFrame extends JFrame implements ActionListener {
     private JPanel jpHomePanelW = new JPanel();
     private JPanel jpHomePanelE = new JPanel();
     private JButton jbNewSkinPack;// = new JButton("Create new SkinPack");
+    private JButton jbImportSkinPack;
+
+    private JPanel jpImportSkinPack = new JPanel(new BorderLayout(10, 10));
+    private JPanel jpISPCenterGrid = new JPanel(new GridLayout(3, 1));
+
+    private ButtonGroup ispButtons = new ButtonGroup();
+    private JRadioButton jrImportMC;
+    private  JRadioButton jrImportMCP;
+    private JRadioButton jrImportD;
+
+    private JPanel jpISPLowButtons = new JPanel(new BorderLayout(10, 10));
+    private JButton jbISPNext;
+
+    private JPanel jpImportMC = new JPanel(new BorderLayout(10, 10));
+    private JPanel jpImportMCP = new JPanel(new BorderLayout(10, 10));
+    private JPanel jpImportD = new JPanel(new BorderLayout(10, 10));
 
     private JPanel jpCenterGrid = new JPanel(new GridLayout(5, 2));
     private JLabel jlName;// = new JLabel("Name: ");
@@ -137,6 +152,9 @@ public class MainFrame extends JFrame implements ActionListener {
             } else FlatMacDarkLaf.setup();
         }
 
+        jmFile = new JMenu(languageModules.get("mf.jm.file"));
+        miNewSkinpack = new JMenuItem(languageModules.get("mf.mi.new_skinpack"));
+        miImportSkinpack = new JMenuItem(languageModules.get("mf.mi.import_skinpack"));
         jmSettings = new JMenu(languageModules.get("mf.jm.settings"));
         miOpenSettings = new JMenuItem(languageModules.get("mf.mi.open_settings"));
         jmTheme = new JMenu(languageModules.get("mf.jm.theme"));
@@ -149,6 +167,11 @@ public class MainFrame extends JFrame implements ActionListener {
         miSystemTheme = new JMenuItem(languageModules.get("mf.mi.sys_theme"));
         miChooseDefaultSaveLoc = new JMenuItem(languageModules.get("mf.mi.default_save_loc"));
         jmLanguage = new JMenu(languageModules.get("mf.jm.language"));
+        jbImportSkinPack = new JButton(languageModules.get("mf.mi.import_skinpack"));
+        jrImportMCP = new JRadioButton(languageModules.get("mf.jr.import_mcp"));
+        jrImportMC = new JRadioButton(languageModules.get("mf.jr.import_mc"));
+        jrImportD = new JRadioButton(languageModules.get("mf.jr.import_d"));
+        jbISPNext = new JButton(languageModules.get("mf.jb.isp_next"));
         jbNewSkinPack = new JButton(languageModules.get("mf.jb.new_skin_pack"));
         jlName = new JLabel(languageModules.get("mf.jl.name"));
         jlDescription = new JLabel(languageModules.get("mf.jl.description"));
@@ -180,6 +203,149 @@ public class MainFrame extends JFrame implements ActionListener {
         jpHomePanel.add(jpHomePanelS, BorderLayout.SOUTH);
         jpHomePanel.add(jpHomePanelW, BorderLayout.WEST);
         jpHomePanel.add(jpHomePanelE, BorderLayout.EAST);
+
+        jbISPNext.addActionListener(this);
+
+        ispButtons.add(jrImportMC);
+        ispButtons.add(jrImportMCP);
+        ispButtons.add(jrImportD);
+
+        jpISPCenterGrid.add(jrImportMCP);
+        jpISPCenterGrid.add(jrImportMC);
+        jpISPCenterGrid.add(jrImportD);
+
+        jpISPLowButtons.add(jbISPNext);
+
+        jpImportSkinPack.add(jpISPCenterGrid, BorderLayout.CENTER);
+        jpImportSkinPack.add(jpISPLowButtons, BorderLayout.SOUTH);
+
+        jrImportMC.addActionListener(this);
+        jrImportMCP.addActionListener(this);
+        jrImportD.addActionListener(this);
+
+        for (int i = 0; i < 3; i++) {
+            JPanel jpCenterBorder = new JPanel(new BorderLayout(10, 10));
+            JPanel jpNorthLabel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            JPanel jpSouth = new JPanel(new BorderLayout(10, 10));
+            JPanel jpSouthButtons = new JPanel(new GridLayout(1, 3));
+            JPanel jpSouthNorth = new JPanel();
+
+            JLabel jlLabel = new JLabel();
+
+            JButton jbBack = new JButton(languageModules.get("mf.jb.isp_back"));
+            JPanel jpMiddlePanel = new JPanel();
+            JButton jbImport = new JButton(languageModules.get("mf.jb.isp_import"));
+
+            jpNorthLabel.setPreferredSize(new Dimension(100, 110));
+            jpSouthNorth.setPreferredSize(new Dimension(100, 160));
+
+            jpNorthLabel.add(jlLabel);
+
+            jpSouthButtons.add(jbBack);
+            jpSouthButtons.add(jpMiddlePanel);
+            jpSouthButtons.add(jbImport);
+
+            jpSouth.add(jpSouthButtons, BorderLayout.SOUTH);
+            jpSouth.add(jpSouthNorth, BorderLayout.NORTH);
+
+
+            JButton jbChooseInGameSkinPack = new JButton(languageModules.get("mf.jb.choose_in_game_skinpack"));
+            JButton jbChoosePathOfGen = new JButton(openFileIcon);
+            JTextField tfChoosePathOfGen = new JTextField();
+            JFileChooser fcChoosePathOfGen = new JFileChooser();
+
+            jbBack.addActionListener((ActionEvent e) -> cardLayout.show(contentRoot, "ImportSkinPack"));
+
+            AtomicReference<String> tempSTRChoosePathOfGen = new AtomicReference<>("");
+            jbImport.addActionListener((ActionEvent e) -> {
+                String strChoosePathOfGen = "";
+                List<String> images = new ArrayList<>();
+
+                switch (importType) {
+                    case "importD":
+                        if (!(tfChoosePathOfGen.getText().isEmpty() || tfChoosePathOfGen.getText().equals("> This can't be empty"))) {
+                            strChoosePathOfGen = tfChoosePathOfGen.getText();
+                        } else warning(this, "You must choose a mcpack file");
+                        break;
+                    case "importMCP":
+                        if (!(tfChoosePathOfGen.getText().isEmpty() || tfChoosePathOfGen.getText().equals("> This can't be empty"))) {
+                            if (!(tfChoosePathOfGen.getText().toLowerCase().endsWith(".mcpack"))) {
+                                strChoosePathOfGen = tfChoosePathOfGen.getText() + ".mcpack";
+                            } else strChoosePathOfGen = tfChoosePathOfGen.getText();
+
+                            String newFilePath = "temp/" + UUID.randomUUID();
+                            unZipFile(Paths.get(strChoosePathOfGen), Paths.get(newFilePath));
+                            strChoosePathOfGen = newFilePath;
+                        } else warning(this, "You must choose a mcpack file");
+                        break;
+                    case "importMC":
+                        if (!tempSTRChoosePathOfGen.get().isEmpty()) {
+                            strChoosePathOfGen = tempSTRChoosePathOfGen.get();
+                        } else warning(this, "You must choose a skinpack");
+                }
+
+                try {
+                    images = Files.walk(Paths.get(strChoosePathOfGen))
+                            .filter(p -> Files.isRegularFile(p) && p.toString().toLowerCase().endsWith(".png"))
+                            .map(p -> p.toAbsolutePath().toString())
+                            .collect(Collectors.toList());
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+
+                importSkinPack(new File(strChoosePathOfGen + "/manifest.json"), new File(strChoosePathOfGen + "/skins.json"), (ArrayList<String>) images);
+
+                cardLayout.show(contentRoot, "NewSkinPack");
+                this.setSize(700, 550);
+            });
+            switch (i) {
+                case 0:
+                    jlLabel.setText(languageModules.get("mf.jl.import_mc.label"));
+
+                    jbChooseInGameSkinPack.addActionListener((ActionEvent e) -> {
+                        fcChoosePathOfGen.setDialogTitle("MCSkinner: Choose path of generation");
+                        fcChoosePathOfGen.setCurrentDirectory(new File(System.getProperty("user.home") + "\\AppData\\Local\\Packages\\Microsoft.MinecraftUWP_8wekyb3d8bbwe\\LocalState\\games\\com.mojang\\skin_packs"));
+                        fcChoosePathOfGen.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+                        int response = fcChoosePathOfGen.showOpenDialog(this);
+                        if (response == JFileChooser.APPROVE_OPTION) {
+                            File selectedFileGenPath = fcChoosePathOfGen.getSelectedFile();
+                            tempSTRChoosePathOfGen.set(selectedFileGenPath.getAbsolutePath());
+                        } else tempSTRChoosePathOfGen.set("");
+                    });
+
+                    jpCenterBorder.add(jbChooseInGameSkinPack, BorderLayout.CENTER);
+                    jpImportMC.add(jpCenterBorder, BorderLayout.CENTER);
+                    jpImportMC.add(jpNorthLabel, BorderLayout.NORTH);
+                    jpImportMC.add(jpSouth, BorderLayout.SOUTH);
+                    break;
+                case 1:
+                    jlLabel.setText(languageModules.get("mf.jl.import_mcp.label"));
+
+                    jbChoosePathOfGen.addActionListener((ActionEvent e) -> {
+                        tfChoosePathOfGen.setText(selectFile(fcChoosePathOfGen, "MCSkinner: Choose path of generation", "*.mcpack", "mcpack"));
+                    });
+
+                    jpCenterBorder.add(tfChoosePathOfGen, BorderLayout.CENTER);
+                    jpCenterBorder.add(jbChoosePathOfGen, BorderLayout.EAST);
+                    jpImportMCP.add(jpCenterBorder, BorderLayout.CENTER);
+                    jpImportMCP.add(jpNorthLabel, BorderLayout.NORTH);
+                    jpImportMCP.add(jpSouth, BorderLayout.SOUTH);
+                    break;
+                case 2:
+                    jlLabel.setText(languageModules.get("mf.jl.import_d.label"));
+
+                    jbChoosePathOfGen.addActionListener((ActionEvent e) -> {
+                        tfChoosePathOfGen.setText(selectDir(fcChoosePathOfGen, "MCSkinner: Choose path of generation"));
+                    });
+
+                    jpCenterBorder.add(tfChoosePathOfGen, BorderLayout.CENTER);
+                    jpCenterBorder.add(jbChoosePathOfGen, BorderLayout.EAST);
+                    jpImportD.add(jpCenterBorder, BorderLayout.CENTER);
+                    jpImportD.add(jpNorthLabel, BorderLayout.NORTH);
+                    jpImportD.add(jpSouth, BorderLayout.SOUTH);
+            }
+        }
 
         jpVersion.add(tfVersion1);
         jpVersion.add(tfVersion2);
@@ -230,8 +396,15 @@ public class MainFrame extends JFrame implements ActionListener {
         cardLayout = new CardLayout(10, 10);
         contentRoot.setLayout(cardLayout);
 
-        contentRoot.add("NewSkinPack", jpHomePanel);
-        contentRoot.add("Home", jpNewSkinPack);
+        contentRoot.add("Home", jpHomePanel);
+        contentRoot.add("ImportSkinPack", jpImportSkinPack);
+        contentRoot.add("ImportMC", jpImportMC);
+        contentRoot.add("ImportMCP", jpImportMCP);
+        contentRoot.add("ImportD", jpImportD);
+        contentRoot.add("NewSkinPack", jpNewSkinPack);
+
+        miNewSkinpack.addActionListener(this);
+        miImportSkinpack.addActionListener(this);
 
         miLight.addActionListener(this);
         miLightExtra.addActionListener(this);
@@ -284,11 +457,15 @@ public class MainFrame extends JFrame implements ActionListener {
             jmLanguage.add(miTempLanguage);
         }
 
+        jmFile.add(miNewSkinpack);
+        jmFile.add(miImportSkinpack);
+
         jmSettings.add(jmTheme);
         jmSettings.add(jmLanguage);
         jmSettings.add(miChooseDefaultSaveLoc);
         jmSettings.add(miOpenSettings);
 
+        mbMain.add(jmFile);
         mbMain.add(jmSettings);
 
         this.setJMenuBar(mbMain);
@@ -301,7 +478,39 @@ public class MainFrame extends JFrame implements ActionListener {
     }
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == miLight) {
+        if (e.getSource() == miNewSkinpack) {
+            cardLayout.show(contentRoot, "NewSkinPack");
+
+            SwingUtilities.updateComponentTreeUI(this);
+            this.setSize(700, 550);
+        } else if (e.getSource() == miImportSkinpack) {
+            cardLayout.show(contentRoot, "ImportSkinPack");
+
+            SwingUtilities.updateComponentTreeUI(this);
+        } else if (e.getSource() == jrImportMC) {
+            importType = "importMC";
+        } else if (e.getSource() == jrImportMCP) {
+            importType = "importMCP";
+        } else if (e.getSource() == jrImportD) {
+            importType = "importD";
+        } else if (e.getSource() == jbISPNext) {
+            switch (importType) {
+                case "importMC":
+                    if (!(System.getProperty("os.name").toLowerCase().contains("mac") || System.getProperty("os.name").toLowerCase().contains("darwin"))) {
+                        cardLayout.show(contentRoot, "ImportMC");
+                    } else warning(this, "Minecraft bedrock isn't supported on mac");
+
+                    System.out.println("importMC");
+                    break;
+                case "importMCP":
+                    cardLayout.show(contentRoot, "ImportMCP");
+                    System.out.println("importMCP");
+                    break;
+                case "importD":
+                    cardLayout.show(contentRoot, "ImportD");
+                    System.out.println("importD");
+            }
+        } else if (e.getSource() == miLight) {
             settings.put("theme", "light");
             updateSettingsJson(settings, "settings.json");
             settingsChangesMessage();
@@ -349,15 +558,12 @@ public class MainFrame extends JFrame implements ActionListener {
             settingsFrame = new SettingsFrame();
 
         } else if (e.getSource() == jbNewSkinPack) {
-            cardLayout.next(contentRoot);
+            cardLayout.show(contentRoot, "NewSkinPack");
             this.setTitle(languageModules.get("mf.title.title"));
 
             this.setSize(700, 550);
 
             SwingUtilities.updateComponentTreeUI(this);
-            this.invalidate();
-            this.validate();
-            this.repaint();
         } else if (e.getSource() == jbSelctFileGenPath) {
             SwingUtilities.updateComponentTreeUI(fcSelectFileGenPath);
             fcSelectFileGenPath.invalidate();
@@ -375,6 +581,27 @@ public class MainFrame extends JFrame implements ActionListener {
             } else tfFileGenPath.setText("> This can't be empty");
         } else if (e.getSource() == jbAddSkin) {
             addSkinFrame = new AddSkinFrame();
+        } else if (e.getSource() == jbApply) {
+            version = tfVersion1.getText() + ", " + tfVersion2.getText() + ", " + tfVersion3.getText();
+            if (Integer.parseInt(tfMCVersion1.getText()) <= 1
+                && Integer.parseInt(tfMCVersion2.getText()) <= 21
+                && Integer.parseInt(tfMCVersion3.getText())  <= 71) {
+                mcVersion = tfMCVersion1.getText() + ", " + tfMCVersion2.getText() + ", " + tfMCVersion3.getText();
+
+                if (mainFrameCorrect(tfName, "skin-pack name")
+                    && mainFrameCorrect(tfDescription, "skin-pack description")
+                    && mainFrameCorrect(tfAuthor, "skin-pack author")) {
+
+                    name = tfName.getText();
+                    description = tfDescription.getText();
+                    author = tfAuthor.getText();
+
+                    saveAsFrame = new SaveAsFrame();
+
+                }
+            } else {
+                warning(this, "The MC Version must be 1 21 70 or lower");
+            }
         } else if (e.getSource() == addSkinFrame.jbApply) {
 
             boolean nameCorrect;
@@ -415,30 +642,6 @@ public class MainFrame extends JFrame implements ActionListener {
                 skins.add(skin);
                 addSkinFrame.dispose();
             }
-        //change
-        } else if (e.getSource() == jbApply) {
-            version = tfVersion1.getText() + ", " + tfVersion2.getText() + ", " + tfVersion3.getText();
-            if (Integer.parseInt(tfMCVersion1.getText()) <= 1
-                && Integer.parseInt(tfMCVersion2.getText()) <= 21
-                && Integer.parseInt(tfMCVersion3.getText())  <= 71) {
-                mcVersion = tfMCVersion1.getText() + ", " + tfMCVersion2.getText() + ", " + tfMCVersion3.getText();
-
-                if (mainFrameCorrect(tfName, "skin-pack name")
-                    && mainFrameCorrect(tfDescription, "skin-pack description")
-                    && mainFrameCorrect(tfAuthor, "skin-pack author")) {
-
-                    name = tfName.getText();
-                    description = tfDescription.getText();
-                    author = tfAuthor.getText();
-
-                    saveAsFrame = new SaveAsFrame();
-
-                }
-            } else {
-                warning(this, "The MC Version must be 1 21 70 or lower");
-            }
-        } else if (e.getActionCommand().equals("saveAsFrame.jbApply")) {
-
         }
     }
     public void updateSettingsJson(HashMap<String, String> settings, String fileName) {
@@ -519,7 +722,17 @@ public class MainFrame extends JFrame implements ActionListener {
             return selectedFileGenPath.getAbsolutePath();
         } else return "> This can't be empty";
     }
+    public String selectFile(JFileChooser fileSelector, String dialogTitle, String fileExtensionFilterDescription, String fileExtensionFilterExtension) {
+        fileSelector.setDialogTitle(dialogTitle);
+        fileSelector.setCurrentDirectory(new File(System.getProperty("user.home")));
+        fileSelector.setFileFilter(new FileNameExtensionFilter(fileExtensionFilterDescription, fileExtensionFilterExtension));
 
+        int response = fileSelector.showOpenDialog(this);
+        if (response == JFileChooser.APPROVE_OPTION) {
+            File selectedFileGenPath = fileSelector.getSelectedFile();
+            return selectedFileGenPath.getAbsolutePath();
+        } else return "> This can't be empty";
+    }
 
     private void copyFile(Path sourcePath, Path destinationPath) {
         try {
@@ -554,6 +767,29 @@ public class MainFrame extends JFrame implements ActionListener {
             e.printStackTrace();
         }
     }
+    private void unZipFile(Path zipFilePath, Path outputDir) {
+        try (ZipInputStream zis = new ZipInputStream(Files.newInputStream(zipFilePath))) {
+            ZipEntry entry;
+            while ((entry = zis.getNextEntry()) != null) {
+                Path newFilePath = outputDir.resolve(entry.getName());
+                if (entry.isDirectory()) {
+                    Files.createDirectories(newFilePath);
+                } else {
+                    Files.createDirectories(newFilePath.getParent()); // make sure parent folders exist
+                    try (OutputStream os = Files.newOutputStream(newFilePath)) {
+                        byte[] buffer = new byte[1024];
+                        int len;
+                        while ((len = zis.read(buffer)) > 0) {
+                            os.write(buffer, 0, len);
+                        }
+                    }
+                }
+                zis.closeEntry();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     public void saveSkinPack() {
         String langFileName;
         if (settings.get("gen_as_cur_lang").equals("true")) {
@@ -581,7 +817,7 @@ public class MainFrame extends JFrame implements ActionListener {
         System.out.println("manifest.json: \n" + manifestJSON);
         skinPackGen.genSkinPackFiles();
 
-        cardLayout.next(contentRoot);
+        cardLayout.show(contentRoot, "Home");
 
         switch (saveAsFrame.selectedSaveType) {
             case "importMC":
@@ -608,10 +844,31 @@ public class MainFrame extends JFrame implements ActionListener {
                 saveAsFrame.dispose();
         }
 
+        this.setSize(700, 460);
         try {
             FileUtils.deleteDirectory(new File("temp"));
         } catch (IOException ex) {
             ex.printStackTrace();
+        }
+    }
+    public void importSkinPack(File manifestFile, File skinsFile, ArrayList<String> images) {
+        try {
+            tfName.setText(SkinPackGen.getSkinpackName(manifestFile));
+            tfDescription.setText(SkinPackGen.getSkinpackDescription(manifestFile));
+            tfAuthor.setText(SkinPackGen.getSkinpackAuthor(manifestFile));
+
+            tfVersion1.setText(Integer.toString(SkinPackGen.getSkinpackVersion(manifestFile)[0]));
+            tfVersion2.setText(Integer.toString(SkinPackGen.getSkinpackVersion(manifestFile)[1]));
+            tfVersion3.setText(Integer.toString(SkinPackGen.getSkinpackVersion(manifestFile)[2]));
+
+            tfMCVersion1.setText(Integer.toString(SkinPackGen.getSkinpackMCVersion(manifestFile)[0]));
+            tfMCVersion2.setText(Integer.toString(SkinPackGen.getSkinpackMCVersion(manifestFile)[1]));
+            tfMCVersion3.setText(Integer.toString(SkinPackGen.getSkinpackMCVersion(manifestFile)[2]));
+
+
+            skins = SkinPackGen.getSkinpackSkins(skinsFile, images);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
