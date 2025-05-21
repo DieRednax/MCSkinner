@@ -1,9 +1,15 @@
 {
   "mf.title.title": "MCSkinner: Maak nuwe skin-pack",
+
   "mf.jb.new_skin_pack": "Maak nuwe skin-pack",
+  "mf.jb.import_skin_pack": "Voer Skin-pack in",
 
 
   "mf.jm.settings": "Instellings",
+  "mf.jm.file": "Lêer",
+
+  "mf.mi.new_skinpack": "Nuwe Skin-pack",
+  "mf.mi.import_skinpack": "Voer Skin-pack in",
 
   "mf.jm.theme": "Gevoel",
   "mf.jm.light": "Lig",
@@ -21,6 +27,20 @@
 
   "mf.mi.default_save_loc": "Standaard stoorplek...",
   "mf.mi.open_settings": "Maak Instellings oop",
+
+  "mf.jr.import_mc": "Voer in vanaf Minecraft",
+  "mf.jr.import_mcp": "Voer in vanaf .mcpack-lêer",
+  "mf.jr.import_d": "Voer in vanaf rou gids",
+  "mf.jb.isp_next": "Volgende >",
+
+  "mf.jb.isp_back": "< Terug",
+  "mf.jb.isp_import": "Voer in na MCSkinner",
+
+  "mf.jl.import_mc.label": "Voer in vanaf Minecraft",
+  "mf.jl.import_mcp.label": "Voer in vanaf .mcpack-lêer",
+  "mf.jl.import_d.label": "Voer in vanaf rou gids",
+
+  "mf.jb.choose_in_game_skinpack": "Kies skin-pack",
 
   "mf.jl.name": "Naam: ",
   "mf.jl.description": "Beskrywing: ",
@@ -76,6 +96,12 @@
   "sf.jl.text_size": "Teks Grootte",
 
   "sf.jl.gen_as_cur_lang": "Genereer skin-pack in huidige taal",
+  "sf.jl.default_import_type": "Standaard invoer metode",
+
+  "sf.cb_i.import_mc": "Voer in na Minecraft",
+  "sf.cb_i.import_mcp": "Voer in na .mcpack-lêer",
+  "sf.cb_i.import_d": "Voer in na rou gids",
+  "sf.cb_i_importT_none": "Geen",
 
   "sf.jb.reset": "Herstel"
 

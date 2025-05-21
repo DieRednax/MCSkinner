@@ -1,6 +1,8 @@
 {
   "mf.title.title": "MCSkinner: Create new skin-pack",
+
   "mf.jb.new_skin_pack": "Create new skin-pack",
+  "mf.jb.import_skin_pack": "Import skin-pack",
 
 
   "mf.jm.file": "File",

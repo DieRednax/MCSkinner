@@ -1,8 +1,15 @@
 {
   "mf.title.title": "MCSkinner：创建新的皮肤包",
+
   "mf.jb.new_skin_pack": "创建新的皮肤包",
+  "mf.jb.import_skin_pack": "导入皮肤包",
+
 
   "mf.jm.settings": "设置",
+  "mf.jm.file": "文件",
+
+  "mf.mi.new_skinpack": "新建皮肤包",
+  "mf.mi.import_skinpack": "导入皮肤包",
 
   "mf.jm.theme": "主题",
   "mf.jm.light": "浅色",
@@ -20,6 +27,20 @@
 
   "mf.mi.default_save_loc": "默认保存位置…",
   "mf.mi.open_settings": "打开设置",
+
+  "mf.jr.import_mc": "从 Minecraft 导入",
+  "mf.jr.import_mcp": "从 .mcpack 文件导入",
+  "mf.jr.import_d": "从原始目录导入",
+  "mf.jb.isp_next": "下一步 >",
+
+  "mf.jb.isp_back": "< 上一步",
+  "mf.jb.isp_import": "导入到 MCSkinner",
+
+  "mf.jl.import_mc.label": "从 Minecraft 导入",
+  "mf.jl.import_mcp.label": "从 .mcpack 文件导入",
+  "mf.jl.import_d.label": "从原始文件夹导入",
+
+  "mf.jb.choose_in_game_skinpack": "选择皮肤包",
 
   "mf.jl.name": "名称：",
   "mf.jl.description": "描述：",
@@ -74,6 +95,12 @@
   "sf.jl.text_size": "文字大小",
 
   "sf.jl.gen_as_cur_lang": "以当前语言生成皮肤包",
+  "sf.jl.default_import_type": "默认导入类型",
+
+  "sf.cb_i.import_mc": "导入到 Minecraft",
+  "sf.cb_i.import_mcp": "导入为 .mcpack 文件",
+  "sf.cb_i.import_d": "导入为原始目录",
+  "sf.cb_i_importT_none": "无",
 
   "sf.jb.reset": "重置"
 

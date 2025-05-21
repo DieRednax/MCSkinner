@@ -83,6 +83,7 @@ public class MainFrame extends JFrame implements ActionListener {
     private JPanel jpHomePanelS = new JPanel();
     private JPanel jpHomePanelW = new JPanel();
     private JPanel jpHomePanelE = new JPanel();
+    private JPanel jpHomeCenterGrid = new JPanel(new GridLayout(2, 1));
     private JButton jbNewSkinPack;// = new JButton("Create new SkinPack");
     private JButton jbImportSkinPack;
 
@@ -173,6 +174,7 @@ public class MainFrame extends JFrame implements ActionListener {
         jrImportD = new JRadioButton(languageModules.get("mf.jr.import_d"));
         jbISPNext = new JButton(languageModules.get("mf.jb.isp_next"));
         jbNewSkinPack = new JButton(languageModules.get("mf.jb.new_skin_pack"));
+        jbImportSkinPack = new JButton(languageModules.get("mf.jb.import_skin_pack"));
         jlName = new JLabel(languageModules.get("mf.jl.name"));
         jlDescription = new JLabel(languageModules.get("mf.jl.description"));
         jlAuthor = new JLabel(languageModules.get("mf.jl.author"));
@@ -191,14 +193,20 @@ public class MainFrame extends JFrame implements ActionListener {
         contentRoot = this.getContentPane();
 
         jbNewSkinPack.addActionListener(this);
-        jbNewSkinPack.setPreferredSize(new Dimension(500, 70));
+        jbNewSkinPack.setPreferredSize(new Dimension(500, 60));
 
-        jpHomePanelN.setPreferredSize(new Dimension(100, 160));
-        jpHomePanelS.setPreferredSize(new Dimension(100, 160));
+        jbImportSkinPack.addActionListener(this);
+        jbImportSkinPack.setPreferredSize(new Dimension(500, 60));
+
+        jpHomePanelN.setPreferredSize(new Dimension(100, 130)); //160
+        jpHomePanelS.setPreferredSize(new Dimension(100, 130)); //160
         jpHomePanelW.setPreferredSize(new Dimension(100, 190));
         jpHomePanelE.setPreferredSize(new Dimension(100, 190));
 
-        jpHomePanel.add(jbNewSkinPack, BorderLayout.CENTER);
+        jpHomeCenterGrid.add(jbNewSkinPack);
+        jpHomeCenterGrid.add(jbImportSkinPack);
+
+        jpHomePanel.add(jpHomeCenterGrid, BorderLayout.CENTER);
         jpHomePanel.add(jpHomePanelN, BorderLayout.NORTH);
         jpHomePanel.add(jpHomePanelS, BorderLayout.SOUTH);
         jpHomePanel.add(jpHomePanelW, BorderLayout.WEST);
@@ -568,6 +576,21 @@ public class MainFrame extends JFrame implements ActionListener {
         } else if (e.getSource() == miOpenSettings) {
             settingsFrame = new SettingsFrame();
 
+        } else if (e.getSource() == jbImportSkinPack) {
+            cardLayout.show(contentRoot, "ImportSkinPack");
+
+            switch (settings.get("defaultimporttype")) {
+                case "importMC":
+                    jrImportMC.setSelected(true);
+                    break;
+                case "importMCP":
+                    jrImportMCP.setSelected(true);
+                    break;
+                case "importD":
+                    jrImportD.setSelected(true);
+            }
+
+            SwingUtilities.updateComponentTreeUI(this);
         } else if (e.getSource() == jbNewSkinPack) {
             cardLayout.show(contentRoot, "NewSkinPack");
             this.setTitle(languageModules.get("mf.title.title"));
