@@ -1,15 +1,13 @@
 package com.redfox.mcskinner.ui;
 
-import com.formdev.flatlaf.FlatLightLaf;
+import com.redfox.mcskinner.Statics;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.ArrayList;
 
 import static com.redfox.mcskinner.MCSkinner.mainFrame;
 
@@ -77,7 +75,7 @@ public class AddSkinFrame extends JFrame implements ActionListener {
         this.add(jpLowButtons, BorderLayout.SOUTH);
         this.add(jpCenterGrid, BorderLayout.CENTER);
 
-        for (Component jTextComponent : mainFrame.getAllLabels(this)) {
+        for (Component jTextComponent : Statics.getAllNamedComponents(this)) {
             jTextComponent.setFont(new Font(mainFrame.settings.get("font"), Font.PLAIN, Integer.parseInt(mainFrame.settings.get("size"))));
         }
 
@@ -97,31 +95,9 @@ public class AddSkinFrame extends JFrame implements ActionListener {
 
             cape = true;
         } else if (e.getSource() == jbSelectTexture) {
-            tfTexture.setText(selectFile(fcSelectTexture, "MCSkinner: Select Skin-Texture", "*.png", "png"));
+            tfTexture.setText(Statics.selectFile(this, fcSelectTexture, "MCSkinner: Select Skin-Texture", "*.png", "png"));
         } else if (e.getSource() == jbSelectCape) {
-            tfCape.setText(selectFile(fcSelectCape, "MCSkinner: Select Skin Cape-Texture", "*.png", "png"));
+            tfCape.setText(Statics.selectFile(this, fcSelectCape, "MCSkinner: Select Skin Cape-Texture", "*.png", "png"));
         }
-    }
-    public String selectFile(JFileChooser fileSelector, String dialogTitle, String fileExtensionFilterDescription, String fileExtensionFilterExtension) {
-        fileSelector.setDialogTitle(dialogTitle);
-        fileSelector.setCurrentDirectory(new File(System.getProperty("user.home")));
-        fileSelector.setFileFilter(new FileNameExtensionFilter(fileExtensionFilterDescription, fileExtensionFilterExtension));
-
-        int response = fileSelector.showOpenDialog(this);
-        if (response == JFileChooser.APPROVE_OPTION) {
-            File selectedFileGenPath = fileSelector.getSelectedFile();
-            return selectedFileGenPath.getAbsolutePath();
-        } else return "> This can't be empty";
-    }
-    public static <T extends JFrame> String selectFileStatic(T parent, JFileChooser fileSelector, String dialogTitle, String fileExtensionFilterDescription, String fileExtensionFilterExtension) {
-        fileSelector.setDialogTitle(dialogTitle);
-        fileSelector.setCurrentDirectory(new File(System.getProperty("user.home")));
-        fileSelector.setFileFilter(new FileNameExtensionFilter(fileExtensionFilterDescription, fileExtensionFilterExtension));
-
-        int response = fileSelector.showOpenDialog(parent);
-        if (response == JFileChooser.APPROVE_OPTION) {
-            File selectedFileGenPath = fileSelector.getSelectedFile();
-            return selectedFileGenPath.getAbsolutePath();
-        } else return "> This can't be empty";
     }
 }

@@ -1,13 +1,13 @@
 package com.redfox.mcskinner.ui;
 
+import com.redfox.mcskinner.Statics;
+
 import javax.swing.*;
-import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.List;
 
 import static com.redfox.mcskinner.MCSkinner.mainFrame;
 
@@ -15,8 +15,8 @@ public class SettingsFrame extends JFrame implements ActionListener {
     Container contentRoot;
 
     String[] themes = {
-            languageModule("mf.jm.light"), languageModule("mf.mi.light_extra"),
-            languageModule("mf.jm.dark"), languageModule("mf.mi.dark_extra")
+            getLanguageModule("mf.jm.light"), getLanguageModule("mf.mi.light_extra"),
+            getLanguageModule("mf.jm.dark"), getLanguageModule("mf.mi.dark_extra")
     };
     String[] fonts = {
             "Open Sans", "Bradley Hand ITC",
@@ -30,14 +30,14 @@ public class SettingsFrame extends JFrame implements ActionListener {
     };
     boolean generateAsCurrentLang = false;
     String[] importTypes = {
-            languageModule("sf.cb_i.import_mc"),
-            languageModule("sf.cb_i.import_mcp"),
-            languageModule("sf.cb_i.import_d"),
-            languageModule("sf.cb_i_importT_none")
+            getLanguageModule("sf.cb_i.import_mc"),
+            getLanguageModule("sf.cb_i.import_mcp"),
+            getLanguageModule("sf.cb_i.import_d"),
+            getLanguageModule("sf.cb_i_importT_none")
     };
 
-    JButton jbCancel = new JButton(languageModule("sf.jb.cancel"));
-    JButton jbApply = new JButton(languageModule("sf.jb.apply"));
+    JButton jbCancel = new JButton(getLanguageModule("sf.jb.cancel"));
+    JButton jbApply = new JButton(getLanguageModule("sf.jb.apply"));
 
     JPanel jpSouthPanel = new JPanel();
 
@@ -55,57 +55,57 @@ public class SettingsFrame extends JFrame implements ActionListener {
     JPanel jpLanguageS = new JPanel();
     JPanel jpOtherS = new JPanel();
 
-    JLabel jlAppearance = new JLabel(languageModule("sf.jl.appearance"));
-    JLabel jlLanguage = new JLabel(languageModule("sf.jl.language"));
-    JLabel jlOther = new JLabel(languageModule("sf.jl.other"));
+    JLabel jlAppearance = new JLabel(getLanguageModule("sf.jl.appearance"));
+    JLabel jlLanguage = new JLabel(getLanguageModule("sf.jl.language"));
+    JLabel jlOther = new JLabel(getLanguageModule("sf.jl.other"));
 
     //jpAppearance
     JPanel jpAppearanceC = new JPanel(new GridLayout(0, 2));
     JPanel jpAppearanceE = new JPanel(new GridLayout(0, 1));
 
-    JLabel jlTheme = new JLabel(languageModule("sf.jl.theme"));
+    JLabel jlTheme = new JLabel(getLanguageModule("sf.jl.theme"));
     JComboBox<String> cbTheme = new JComboBox<>(themes);
-    JButton jbThemeReset = new JButton(languageModule("sf.jb.reset"));
+    JButton jbThemeReset = new JButton(getLanguageModule("sf.jb.reset"));
 
-    JLabel jlFont = new JLabel(languageModule("sf.jl.font"));
+    JLabel jlFont = new JLabel(getLanguageModule("sf.jl.font"));
     JComboBox<String> cbFont = new JComboBox<>(fonts);
-    JButton jbFontReset = new JButton(languageModule("sf.jb.reset"));
+    JButton jbFontReset = new JButton(getLanguageModule("sf.jb.reset"));
 
-    JLabel jlTextSize = new JLabel(languageModule("sf.jl.text_size"));
+    JLabel jlTextSize = new JLabel(getLanguageModule("sf.jl.text_size"));
     JSpinner jsTextSize = new JSpinner(new SpinnerNumberModel(12, 1, 70, 2));
-    JButton jbTextSizeReset = new JButton(languageModule("sf.jb.reset"));
+    JButton jbTextSizeReset = new JButton(getLanguageModule("sf.jb.reset"));
 
     //jpLanguage
     JPanel jpLanguageC = new JPanel(new GridLayout(0, 2));
     JPanel jpLanguageE = new JPanel(new GridLayout(0, 1));
 
-    JLabel jlSelectLanguage = new JLabel(languageModule("sf.jl.language"));
+    JLabel jlSelectLanguage = new JLabel(getLanguageModule("sf.jl.language"));
     JComboBox<String> cbSelectLanguage = new JComboBox<>(languages);
-    JButton jbSelectLanguageReset = new JButton(languageModule("sf.jb.reset"));
+    JButton jbSelectLanguageReset = new JButton(getLanguageModule("sf.jb.reset"));
 
-    JLabel jlGenerateAsCurrentLang = new JLabel(languageModule("sf.jl.gen_as_cur_lang"));
+    JLabel jlGenerateAsCurrentLang = new JLabel(getLanguageModule("sf.jl.gen_as_cur_lang"));
     JCheckBox jcGenerateAsCurrentLang = new JCheckBox();
-    JButton jbGenerateAsCurrentLangReset = new JButton(languageModule("sf.jb.reset"));
+    JButton jbGenerateAsCurrentLangReset = new JButton(getLanguageModule("sf.jb.reset"));
 
     //jpOther
     JPanel jpOtherC = new JPanel(new GridLayout(0, 2));
     JPanel jpOtherE = new JPanel(new GridLayout(0, 1));
 
-    JLabel jlDefaultSaveLoc = new JLabel(languageModule("mf.mi.default_save_loc"));
+    JLabel jlDefaultSaveLoc = new JLabel(getLanguageModule("mf.mi.default_save_loc"));
     JPanel jpDefaultSaveLoc = new JPanel(new BorderLayout(1, 1));
     JTextField tfDefaultSaveLoc = new JTextField("");
     JButton jbDefaultSaveLoc = new JButton(mainFrame.openFileIcon);
     JFileChooser fcDefaultSaveLoc = new JFileChooser();
-    JButton jbDefaultSaveLocReset = new JButton(languageModule("sf.jb.reset"));
+    JButton jbDefaultSaveLocReset = new JButton(getLanguageModule("sf.jb.reset"));
 
-    JLabel jlDefaultImportType = new JLabel(languageModule("sf.jl.default_import_type"));
+    JLabel jlDefaultImportType = new JLabel(getLanguageModule("sf.jl.default_import_type"));
     JComboBox<String> cbDefaultImportType = new JComboBox<>(importTypes);
-    JButton jbDefaultImportTypeReset = new JButton(languageModule("sf.jb.reset"));
+    JButton jbDefaultImportTypeReset = new JButton(getLanguageModule("sf.jb.reset"));
 
     public SettingsFrame() {
         this.setSize(600, 360);
         this.setIconImage(mainFrame.appIcon.getImage());
-        this.setTitle(languageModule("sf.title.title"));
+        this.setTitle(getLanguageModule("sf.title.title"));
         this.setResizable(true);
         this.setLocationRelativeTo(mainFrame);
         contentRoot = this.getContentPane();
@@ -215,9 +215,9 @@ public class SettingsFrame extends JFrame implements ActionListener {
         jpLanguage.add(jpLanguageS, BorderLayout.SOUTH);
         jpOther.add(jpOtherS, BorderLayout.SOUTH);
 
-        tpMenu.addTab(languageModule("sf.tn.appearance"), jpAppearance);
-        tpMenu.addTab(languageModule("sf.tn.language"), jpLanguage);
-        tpMenu.addTab(languageModule("sf.tn.other"), jpOther);
+        tpMenu.addTab(getLanguageModule("sf.tn.appearance"), jpAppearance);
+        tpMenu.addTab(getLanguageModule("sf.tn.language"), jpLanguage);
+        tpMenu.addTab(getLanguageModule("sf.tn.other"), jpOther);
 
         jpSouthPanel.add(jbApply);
         jpSouthPanel.add(jbCancel);
@@ -225,7 +225,7 @@ public class SettingsFrame extends JFrame implements ActionListener {
         contentRoot.add(tpMenu);
         contentRoot.add(jpSouthPanel, BorderLayout.SOUTH);
 
-        ArrayList<Component> jTextComponents = getAllLabels(contentRoot);
+        ArrayList<Component> jTextComponents = Statics.getAllNamedComponents(contentRoot);
         for (Component jTextComponent : jTextComponents) {
             jTextComponent.setFont(new Font(mainFrame.settings.get("font"), Font.PLAIN, Integer.parseInt(mainFrame.settings.get("size"))));
         }
@@ -253,7 +253,7 @@ public class SettingsFrame extends JFrame implements ActionListener {
         }
 
         else if (e.getSource() == jbDefaultSaveLoc) {
-            tfDefaultSaveLoc.setText(mainFrame.selectDir(fcDefaultSaveLoc, "MCSkinner: Choose default path of generation"));
+            tfDefaultSaveLoc.setText(Statics.selectDir(this, fcDefaultSaveLoc, "MCSkinner: Choose default path of generation"));
         } else if (e.getSource() == jbCancel) {
             this.dispose();
         } else if (e.getSource() == jbApply) {
@@ -282,34 +282,7 @@ public class SettingsFrame extends JFrame implements ActionListener {
             mainFrame.settingsChangesMessage();
         }
     }
-    private String languageModule(String key) {
+    private String getLanguageModule(String key) {
         return mainFrame.languageModules.get(key);
-    }
-    public ArrayList<Component> getAllLabels(Container container) {
-        ArrayList<Component> jTextComponents = new ArrayList<>();
-        Component[] components = container.getComponents();
-
-        for (Component component : components) {
-            if (hasText(component)) {
-                jTextComponents.add(component);
-//            } else if (component instanceof JTabbedPane || component instanceof JComboBox<?>) {
-//                jTextComponents.add(component);
-            } else if (component instanceof Container) {
-                jTextComponents.addAll(getAllLabels((Container) component));
-            }
-        }
-
-        return jTextComponents;
-    }
-    private boolean hasText(Component component) {
-        try {
-            // Check if the component has a getText() method and returns non-null, non-empty string
-            Method getTextMethod = component.getClass().getMethod("getText");
-            Object result = getTextMethod.invoke(component);
-            return result instanceof String && !((String) result).isEmpty();
-        } catch (Exception e) {
-            // getText doesn't exist or isn't accessible – ignore
-            return false;
-        }
     }
 }

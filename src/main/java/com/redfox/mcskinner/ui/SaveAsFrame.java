@@ -1,5 +1,7 @@
 package com.redfox.mcskinner.ui;
 
+import com.redfox.mcskinner.Statics;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -135,7 +137,7 @@ public class SaveAsFrame extends JFrame implements ActionListener {
                     jlLabel.setText(mainFrame.languageModules.get("saf.jl.label.emcp"));
 
                     jbChoosePathOfGen.addActionListener((ActionEvent e) -> {
-                         tfChoosePathOfGen.setText(mainFrame.getAddSkinFrame().selectFile(fcChoosePathOfGen, "MCSkinner: Choose path of generation", "*.mcpack", "mcpack"));
+                         tfChoosePathOfGen.setText(Statics.selectFile(this, fcChoosePathOfGen, "MCSkinner: Choose path of generation", "*.mcpack", "mcpack"));
                     });
 
                     jpCenterBorder.add(tfChoosePathOfGen, BorderLayout.CENTER);
@@ -148,7 +150,7 @@ public class SaveAsFrame extends JFrame implements ActionListener {
                     jlLabel.setText(mainFrame.languageModules.get("saf.jl.label.sd"));
 
                     jbChoosePathOfGen.addActionListener((ActionEvent e) -> {
-                        tfChoosePathOfGen.setText(mainFrame.selectDir(fcChoosePathOfGen, "MCSkinner: Choose path of generation"));
+                        tfChoosePathOfGen.setText(Statics.selectDir(this, fcChoosePathOfGen, "MCSkinner: Choose path of generation"));
                     });
 
                     jpCenterBorder.add(tfChoosePathOfGen, BorderLayout.CENTER);
@@ -159,7 +161,7 @@ public class SaveAsFrame extends JFrame implements ActionListener {
             }
         }
 
-        for (Component jTextComponent : mainFrame.getAllLabels(contentRoot)) {
+        for (Component jTextComponent : Statics.getAllNamedComponents(contentRoot)) {
             jTextComponent.setFont(new Font(mainFrame.settings.get("font"), Font.PLAIN, Integer.parseInt(mainFrame.settings.get("size"))));
         }
 
@@ -191,7 +193,7 @@ public class SaveAsFrame extends JFrame implements ActionListener {
         if (!(str.equals("> This can't be empty") || str.isEmpty())) {
             return true;
         } else {
-            mainFrame.warning(this, "You must insert a " + strWarnName);
+            Statics.warning(this, "You must insert a " + strWarnName);
             return false;
         }
     }

@@ -9,6 +9,7 @@ import com.google.gson.GsonBuilder;
 import com.jthemedetecor.OsThemeDetector;
 import com.redfox.mcskinner.MCSkinner;
 import com.redfox.mcskinner.SkinPackGen;
+import com.redfox.mcskinner.Statics;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
@@ -273,7 +274,7 @@ public class MainFrame extends JFrame implements ActionListener {
                     case "importD":
                         if (!(tfChoosePathOfGen.getText().isEmpty() || tfChoosePathOfGen.getText().equals("> This can't be empty"))) {
                             strChoosePathOfGen = tfChoosePathOfGen.getText();
-                        } else warning(this, "You must choose a mcpack file");
+                        } else Statics.warning(this, "You must choose a mcpack file");
                         break;
                     case "importMCP":
                         if (!(tfChoosePathOfGen.getText().isEmpty() || tfChoosePathOfGen.getText().equals("> This can't be empty"))) {
@@ -282,14 +283,14 @@ public class MainFrame extends JFrame implements ActionListener {
                             } else strChoosePathOfGen = tfChoosePathOfGen.getText();
 
                             String newFilePath = "temp/" + UUID.randomUUID();
-                            unZipFile(Paths.get(strChoosePathOfGen), Paths.get(newFilePath));
+                            Statics.unZipFile(Paths.get(strChoosePathOfGen), Paths.get(newFilePath));
                             strChoosePathOfGen = newFilePath;
-                        } else warning(this, "You must choose a mcpack file");
+                        } else Statics.warning(this, "You must choose a mcpack file");
                         break;
                     case "importMC":
                         if (!tempSTRChoosePathOfGen.get().isEmpty()) {
                             strChoosePathOfGen = tempSTRChoosePathOfGen.get();
-                        } else warning(this, "You must choose a skinpack");
+                        } else Statics.warning(this, "You must choose a skinpack");
                 }
 
                 try {
@@ -331,7 +332,7 @@ public class MainFrame extends JFrame implements ActionListener {
                     jlLabel.setText(languageModules.get("mf.jl.import_mcp.label"));
 
                     jbChoosePathOfGen.addActionListener((ActionEvent e) -> {
-                        tfChoosePathOfGen.setText(selectFile(fcChoosePathOfGen, "MCSkinner: Choose path of generation", "*.mcpack", "mcpack"));
+                        tfChoosePathOfGen.setText(Statics.selectFile(this, fcChoosePathOfGen, "MCSkinner: Choose path of generation", "*.mcpack", "mcpack"));
                     });
 
                     jpCenterBorder.add(tfChoosePathOfGen, BorderLayout.CENTER);
@@ -344,7 +345,7 @@ public class MainFrame extends JFrame implements ActionListener {
                     jlLabel.setText(languageModules.get("mf.jl.import_d.label"));
 
                     jbChoosePathOfGen.addActionListener((ActionEvent e) -> {
-                        tfChoosePathOfGen.setText(selectDir(fcChoosePathOfGen, "MCSkinner: Choose path of generation"));
+                        tfChoosePathOfGen.setText(Statics.selectDir(this, fcChoosePathOfGen, "MCSkinner: Choose path of generation"));
                     });
 
                     jpCenterBorder.add(tfChoosePathOfGen, BorderLayout.CENTER);
@@ -456,7 +457,7 @@ public class MainFrame extends JFrame implements ActionListener {
                             break;
                         default:
                             settings.put("language", "English");
-                            info(this, "System default language unavailable.\nChoosing English instead");
+                            Statics.info(this, "System default language unavailable.\nChoosing English instead");
                     }
                     updateSettingsJson(settings, "settings.json");
                     settingsChangesMessage();
@@ -478,7 +479,7 @@ public class MainFrame extends JFrame implements ActionListener {
 
         this.setJMenuBar(mbMain);
 
-        for (Component jTextComponent : getAllLabels(contentRoot)) {
+        for (Component jTextComponent : Statics.getAllNamedComponents(contentRoot)) {
             jTextComponent.setFont(new Font(settings.get("font"), Font.PLAIN, Integer.parseInt(settings.get("size"))));
         }
 
@@ -517,7 +518,7 @@ public class MainFrame extends JFrame implements ActionListener {
                 case "importMC":
                     if (!(System.getProperty("os.name").toLowerCase().contains("mac") || System.getProperty("os.name").toLowerCase().contains("darwin"))) {
                         cardLayout.show(contentRoot, "ImportMC");
-                    } else warning(this, "Minecraft bedrock isn't supported on mac");
+                    } else Statics.warning(this, "Minecraft bedrock isn't supported on mac");
 
                     System.out.println("importMC");
                     break;
@@ -634,7 +635,7 @@ public class MainFrame extends JFrame implements ActionListener {
 
                 }
             } else {
-                warning(this, "The MC Version must be 1 21 70 or lower");
+                Statics.warning(this, "The MC Version must be 1 21 70 or lower");
             }
         } else if (e.getSource() == addSkinFrame.jbApply) {
 
@@ -648,14 +649,14 @@ public class MainFrame extends JFrame implements ActionListener {
                 skin.put("name", addSkinFrame.tfName.getText());
                 nameCorrect = true;
             } else {
-                warning(addSkinFrame, "You must insert a skin name");
+                Statics.warning(addSkinFrame, "You must insert a skin name");
                 nameCorrect = false;
             }
             if (!(addSkinFrame.tfTexture.getText().equals("> This can't be empty") || addSkinFrame.tfTexture.getText().isEmpty())) {
                 skin.put("texture", addSkinFrame.tfTexture.getText());
                 textureCorrect = true;
             } else {
-                warning(addSkinFrame, "You must insert a skin texture (*.png)");
+                Statics.warning(addSkinFrame, "You must insert a skin texture (*.png)");
                 textureCorrect = false;
             }
             if (addSkinFrame.cape) {
@@ -663,7 +664,7 @@ public class MainFrame extends JFrame implements ActionListener {
                     skin.put("cape", addSkinFrame.tfCape.getText());
                     capeCorrect = true;
                 } else {
-                    warning(addSkinFrame, "You must insert a cape texture (*.png)");
+                    Statics.warning(addSkinFrame, "You must insert a cape texture (*.png)");
                     capeCorrect = false;
                 }
             } else capeCorrect = true;
@@ -687,21 +688,14 @@ public class MainFrame extends JFrame implements ActionListener {
         }
     }
 
-    public void warning(Component parent, String message) {
-        JOptionPane.showMessageDialog(parent, message, "MCSkinner: warning", JOptionPane.WARNING_MESSAGE);
-    }
-    public void info(Component parent, String message) {
-        JOptionPane.showMessageDialog(parent, message, "MCSkinner: info", JOptionPane.INFORMATION_MESSAGE);
-    }
-
     public void settingsChangesMessage() {
-        info(this, "You must restart MCSkinner to apply your changes");
+        Statics.info(this, "You must restart MCSkinner to apply your changes");
     }
     private boolean mainFrameCorrect(JTextField tf, String tfWarnName) {
         if (!(tf.getText().equals("> This can't be empty") || tf.getText().isEmpty())) {
             return true;
         } else {
-            warning(this, "You must insert a " + tfWarnName);
+            Statics.warning(this, "You must insert a " + tfWarnName);
             return false;
         }
     }
@@ -739,6 +733,7 @@ public class MainFrame extends JFrame implements ActionListener {
             System.exit(1);
         }
     }
+
     public AddSkinFrame getAddSkinFrame() {
         return addSkinFrame;
     }
@@ -746,85 +741,6 @@ public class MainFrame extends JFrame implements ActionListener {
         return settingsFrame;
     }
 
-    public String selectDir(JFileChooser fileSelector, String dialogTitle) {
-        fileSelector.setDialogTitle(dialogTitle);
-        fileSelector.setCurrentDirectory(new File(System.getProperty("user.home")));
-        fileSelector.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-
-        int response = fileSelector.showOpenDialog(this);
-        if (response == JFileChooser.APPROVE_OPTION) {
-            File selectedFileGenPath = fileSelector.getSelectedFile();
-            return selectedFileGenPath.getAbsolutePath();
-        } else return "> This can't be empty";
-    }
-    public String selectFile(JFileChooser fileSelector, String dialogTitle, String fileExtensionFilterDescription, String fileExtensionFilterExtension) {
-        fileSelector.setDialogTitle(dialogTitle);
-        fileSelector.setCurrentDirectory(new File(System.getProperty("user.home")));
-        fileSelector.setFileFilter(new FileNameExtensionFilter(fileExtensionFilterDescription, fileExtensionFilterExtension));
-
-        int response = fileSelector.showOpenDialog(this);
-        if (response == JFileChooser.APPROVE_OPTION) {
-            File selectedFileGenPath = fileSelector.getSelectedFile();
-            return selectedFileGenPath.getAbsolutePath();
-        } else return "> This can't be empty";
-    }
-
-    private void copyFile(Path sourcePath, Path destinationPath) {
-        try {
-            Files.copy(sourcePath, destinationPath.resolve(sourcePath.getFileName()), StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            System.err.println("Error copying file " + sourcePath + " to destination " + destinationPath + ": " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-    private void copyDir(File sourceDir, File destDir) {
-        try {
-            FileUtils.copyDirectory(sourceDir, destDir);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    private void zipFile(Path sourceDir, Path destFile) {
-        try(ZipOutputStream zipOutputStream = new ZipOutputStream(Files.newOutputStream(destFile))) {
-            Files.walk(sourceDir)
-                    .filter(path -> !Files.isDirectory(path))
-                    .forEach(path -> {
-                        ZipEntry zipEntry = new ZipEntry(sourceDir.relativize(path).toString());
-                        try {
-                            zipOutputStream.putNextEntry(zipEntry);
-                            Files.copy(path, zipOutputStream);
-                            zipOutputStream.closeEntry();
-                        } catch (IOException ex) {
-                            throw new UncheckedIOException(ex);
-                        }
-                    });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    private void unZipFile(Path zipFilePath, Path outputDir) {
-        try (ZipInputStream zis = new ZipInputStream(Files.newInputStream(zipFilePath))) {
-            ZipEntry entry;
-            while ((entry = zis.getNextEntry()) != null) {
-                Path newFilePath = outputDir.resolve(entry.getName());
-                if (entry.isDirectory()) {
-                    Files.createDirectories(newFilePath);
-                } else {
-                    Files.createDirectories(newFilePath.getParent()); // make sure parent folders exist
-                    try (OutputStream os = Files.newOutputStream(newFilePath)) {
-                        byte[] buffer = new byte[1024];
-                        int len;
-                        while ((len = zis.read(buffer)) > 0) {
-                            os.write(buffer, 0, len);
-                        }
-                    }
-                }
-                zis.closeEntry();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
     public void saveSkinPack() {
         String langFileName;
         if (settings.get("gen_as_cur_lang").equals("true")) {
@@ -857,25 +773,25 @@ public class MainFrame extends JFrame implements ActionListener {
         switch (saveAsFrame.selectedSaveType) {
             case "importMC":
                 if (!System.getProperty("os.name").toLowerCase().contains("mac") || !System.getProperty("os.name").toLowerCase().contains("darwin")) {
-                    copyDir(new File("temp/" + name), new File(System.getProperty("user.home") + "\\AppData\\Local\\Packages\\Microsoft.MinecraftUWP_8wekyb3d8bbwe\\LocalState\\games\\com.mojang\\skin_packs\\" + name));
+                    Statics.copyDir(new File("temp/" + name), new File(System.getProperty("user.home") + "\\AppData\\Local\\Packages\\Microsoft.MinecraftUWP_8wekyb3d8bbwe\\LocalState\\games\\com.mojang\\skin_packs\\" + name));
                     System.out.println("Generated skin-pack at: " + System.getProperty("user.home") + "\\AppData\\Local\\Packages\\Microsoft.MinecraftUWP_8wekyb3d8bbwe\\LocalState\\games\\com.mojang\\skin_packs" + name);
                 } else
-                    warning(saveAsFrame, "Minecraft bedrock is not supported on MacOS, so you cannot import this pack into the game");
+                    Statics.warning(saveAsFrame, "Minecraft bedrock is not supported on MacOS, so you cannot import this pack into the game");
                 saveAsFrame.dispose();
                 break;
             case "exportMCP":
                 String mcpackPath = saveAsFrame.getStrTFSelectedDirText();
 
                 if (mcpackPath.toLowerCase().endsWith(".mcpack")) {
-                    zipFile(Paths.get("temp/" + name), Paths.get(saveAsFrame.getStrTFSelectedDirText()));
+                    Statics.zipFile(Paths.get("temp/" + name), Paths.get(saveAsFrame.getStrTFSelectedDirText()));
                 } else {
-                    zipFile(Paths.get("temp/" + name), Paths.get(saveAsFrame.getStrTFSelectedDirText() + "/" + name + ".mcpack"));
+                    Statics.zipFile(Paths.get("temp/" + name), Paths.get(saveAsFrame.getStrTFSelectedDirText() + "/" + name + ".mcpack"));
                 }
 
                 saveAsFrame.dispose();
                 break;
             case "saveD":
-                copyDir(new File("temp/" + name), new File(saveAsFrame.getStrTFSelectedDirText() + "/" + name));
+                Statics.copyDir(new File("temp/" + name), new File(saveAsFrame.getStrTFSelectedDirText() + "/" + name));
                 saveAsFrame.dispose();
         }
 
@@ -904,34 +820,6 @@ public class MainFrame extends JFrame implements ActionListener {
             skins = SkinPackGen.getSkinpackSkins(skinsFile, images);
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
-
-    public ArrayList<Component> getAllLabels(Container container) {
-        ArrayList<Component> jTextComponents = new ArrayList<>();
-        Component[] components = container.getComponents();
-
-        for (Component component : components) {
-            if (hasText(component)) {
-                jTextComponents.add(component);
-//            } else if (component instanceof JTabbedPane || component instanceof JComboBox<?>) {
-//                jTextComponents.add(component);
-            } else if (component instanceof Container) {
-                jTextComponents.addAll(getAllLabels((Container) component));
-            }
-        }
-
-        return jTextComponents;
-    }
-    private boolean hasText(Component component) {
-        try {
-            // Check if the component has a getText() method and returns non-null, non-empty string
-            Method getTextMethod = component.getClass().getMethod("getText");
-            Object result = getTextMethod.invoke(component);
-            return result instanceof String && !((String) result).isEmpty();
-        } catch (Exception e) {
-            // getText doesn't exist or isn't accessible – ignore
-            return false;
         }
     }
 }
