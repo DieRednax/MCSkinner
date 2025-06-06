@@ -10,17 +10,18 @@ import java.awt.event.ActionListener;
 import java.io.File;
 
 import static com.redfox.mcskinner.MCSkinner.mainFrame;
+import static com.redfox.mcskinner.MCSkinner.settingsHandler;
 
 public class AddSkinFrame extends JFrame implements ActionListener {
     public boolean cape = false;
 
 
     private JPanel jpCenterGrid = new JPanel(new GridLayout(3, 2));
-    private JLabel jlName = new JLabel(mainFrame.languageModules.get("asf.jl.name"));
-    private JLabel jlGeo = new JLabel(mainFrame.languageModules.get("asf.jl.geo"));
+    private JLabel jlName = new JLabel(settingsHandler.getCompLangName("asf.jl.name"));
+    private JLabel jlGeo = new JLabel(settingsHandler.getCompLangName("asf.jl.geo"));
 //    private JLabel jlGeoPath = new JLabel("Geometry Path: ");
-    private JLabel jlTexture = new JLabel(mainFrame.languageModules.get("asf.jl.texture"));
-    private JLabel jlCape = new JLabel(mainFrame.languageModules.get("asf.jl.cape"));
+    private JLabel jlTexture = new JLabel(settingsHandler.getCompLangName("asf.jl.texture"));
+    private JLabel jlCape = new JLabel(settingsHandler.getCompLangName("asf.jl.cape"));
     public JTextField tfName = new JTextField("");
     public JComboBox<String> cbGeo = new JComboBox<>(new String[]{"Classic", "Slim"});
 //    public JTextField tfGeoPath = new JTextField();
@@ -34,12 +35,12 @@ public class AddSkinFrame extends JFrame implements ActionListener {
     private JFileChooser fcSelectCape = new JFileChooser();
 
     private JPanel jpLowButtons = new JPanel(new BorderLayout(2, 2));
-    private JButton jbAddCape = new JButton(mainFrame.languageModules.get("asf.jb.add_cape"));
-    public JButton jbApply = new JButton(mainFrame.languageModules.get("asf.jb.apply"));
+    private JButton jbAddCape = new JButton(settingsHandler.getCompLangName("asf.jb.add_cape"));
+    public JButton jbApply = new JButton(settingsHandler.getCompLangName("asf.jb.apply"));
     public AddSkinFrame() {
         this.setSize(500, 300);
         this.setIconImage(mainFrame.appIcon.getImage());
-        this.setTitle(mainFrame.languageModules.get("asf.title.title"));
+        this.setTitle(settingsHandler.getCompLangName("asf.title.title"));
         this.setResizable(true);
         this.setLocationRelativeTo(mainFrame);
         this.setLayout(new BorderLayout(10, 10));
@@ -75,9 +76,7 @@ public class AddSkinFrame extends JFrame implements ActionListener {
         this.add(jpLowButtons, BorderLayout.SOUTH);
         this.add(jpCenterGrid, BorderLayout.CENTER);
 
-        for (Component jTextComponent : Statics.getAllNamedComponents(this)) {
-            jTextComponent.setFont(new Font(mainFrame.settings.get("font"), Font.PLAIN, Integer.parseInt(mainFrame.settings.get("size"))));
-        }
+        settingsHandler.doCompFonts(this);
 
         this.setVisible(true);
     }

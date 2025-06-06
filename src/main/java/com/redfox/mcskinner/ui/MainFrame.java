@@ -8,29 +8,22 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.jthemedetecor.OsThemeDetector;
 import com.redfox.mcskinner.MCSkinner;
+import com.redfox.mcskinner.SettingsHandler;
 import com.redfox.mcskinner.SkinPackGen;
 import com.redfox.mcskinner.Statics;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.lang.reflect.Method;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
 
 public class MainFrame extends JFrame implements ActionListener {
     private ArrayList<HashMap<String, String>> skins = new ArrayList<>();
@@ -51,6 +44,8 @@ public class MainFrame extends JFrame implements ActionListener {
     public HashMap<String, String> settings = new HashMap<>();
     public HashMap<String, String> languageModules = new HashMap<>();
 
+    private SettingsHandler settingsHandler = MCSkinner.settingsHandler;
+
     private String name = "";
     private String description = "";
     private String author = "";
@@ -61,22 +56,22 @@ public class MainFrame extends JFrame implements ActionListener {
     private Container contentRoot;
 
     private JMenuBar mbMain = new JMenuBar();
-    private JMenu jmFile;
-    private JMenuItem miNewSkinpack;
-    private JMenuItem miImportSkinpack;
-    private JMenu jmSettings;// = new JMenu("Settings");
-    private JMenuItem miOpenSettings;// = new JMenuItem("Open Settings");
-    private JMenu jmTheme;// = new JMenu("Theme");
-    private JMenu jmLight;
-    private JMenuItem miLight;// = new JMenuItem("Light");
-    private JMenuItem miLightExtra;
-    private JMenu jmDark;
-    private JMenuItem miDark;// = new JMenuItem("Dark");
-    private JMenuItem miDarkExtra;
-    private JMenuItem miSystemTheme;
-    private JMenuItem miChooseDefaultSaveLoc;// = new JMenuItem("Default save location...");
+    private JMenu jmFile = new JMenu(settingsHandler.getCompLangName("mf.jm.file"));;
+    private JMenuItem miNewSkinpack = new JMenuItem(settingsHandler.getCompLangName("mf.mi.new_skinpack"));
+    private JMenuItem miImportSkinpack = new JMenuItem(settingsHandler.getCompLangName("mf.mi.import_skinpack"));
+    private JMenu jmSettings = new JMenu(settingsHandler.getCompLangName("mf.jm.settings"));// = new JMenu("Settings");
+    private JMenuItem miOpenSettings = new JMenuItem(settingsHandler.getCompLangName("mf.mi.open_settings"));// = new JMenuItem("Open Settings");
+    private JMenu jmTheme = new JMenu(settingsHandler.getCompLangName("mf.jm.theme"));// = new JMenu("Theme");
+    private JMenu jmLight = new JMenu(settingsHandler.getCompLangName("mf.jm.light"));
+    private JMenuItem miLight = new JMenuItem(settingsHandler.getCompLangName("mf.mi.light"));// = new JMenuItem("Light");
+    private JMenuItem miLightExtra = new JMenuItem(settingsHandler.getCompLangName("mf.mi.light_extra"));
+    private JMenu jmDark = new JMenu(settingsHandler.getCompLangName("mf.jm.dark"));
+    private JMenuItem miDark = new JMenuItem(settingsHandler.getCompLangName("mf.mi.dark"));// = new JMenuItem("Dark");
+    private JMenuItem miDarkExtra = new JMenuItem(settingsHandler.getCompLangName("mf.mi.dark_extra"));
+    private JMenuItem miSystemTheme = new JMenuItem(settingsHandler.getCompLangName("mf.mi.sys_theme"));
+    private JMenuItem miChooseDefaultSaveLoc = new JMenuItem(settingsHandler.getCompLangName("mf.mi.default_save_loc"));// = new JMenuItem("Default save location...");
     private JFileChooser fcChooseDefaultSaveLoc = new JFileChooser();
-    private JMenu jmLanguage;// = new JMenu("Language");
+    private JMenu jmLanguage = new JMenu(settingsHandler.getCompLangName("mf.jm.language"));// = new JMenu("Language");
     private ArrayList<String> languages = new ArrayList<>();
 
     private JPanel jpHomePanel = new JPanel(new BorderLayout());
@@ -85,30 +80,30 @@ public class MainFrame extends JFrame implements ActionListener {
     private JPanel jpHomePanelW = new JPanel();
     private JPanel jpHomePanelE = new JPanel();
     private JPanel jpHomeCenterGrid = new JPanel(new GridLayout(2, 1));
-    private JButton jbNewSkinPack;// = new JButton("Create new SkinPack");
-    private JButton jbImportSkinPack;
+    private JButton jbNewSkinPack = new JButton(settingsHandler.getCompLangName("mf.jb.new_skin_pack"));// = new JButton("Create new SkinPack");
+    private JButton jbImportSkinPack = new JButton(settingsHandler.getCompLangName("mf.jb.import_skin_pack"));
 
     private JPanel jpImportSkinPack = new JPanel(new BorderLayout(10, 10));
     private JPanel jpISPCenterGrid = new JPanel(new GridLayout(3, 1));
 
     private ButtonGroup ispButtons = new ButtonGroup();
-    private JRadioButton jrImportMC;
-    private  JRadioButton jrImportMCP;
-    private JRadioButton jrImportD;
+    private JRadioButton jrImportMC = new JRadioButton(settingsHandler.getCompLangName("mf.jr.import_mc"));
+    private  JRadioButton jrImportMCP = new JRadioButton(settingsHandler.getCompLangName("mf.jr.import_mcp"));
+    private JRadioButton jrImportD = new JRadioButton(settingsHandler.getCompLangName("mf.jr.import_d"));
 
     private JPanel jpISPLowButtons = new JPanel(new BorderLayout(10, 10));
-    private JButton jbISPNext;
+    private JButton jbISPNext = new JButton(settingsHandler.getCompLangName("mf.jb.isp_next"));
 
     private JPanel jpImportMC = new JPanel(new BorderLayout(10, 10));
     private JPanel jpImportMCP = new JPanel(new BorderLayout(10, 10));
     private JPanel jpImportD = new JPanel(new BorderLayout(10, 10));
 
     private JPanel jpCenterGrid = new JPanel(new GridLayout(5, 2));
-    private JLabel jlName;// = new JLabel("Name: ");
-    private JLabel jlDescription;// = new JLabel("Description: ");
-    private JLabel jlAuthor;// = new JLabel("Author: ");
-    private JLabel jlVersion;// = new JLabel("Version: ");
-    private JLabel jlMCVersion;// = new JLabel("MC Version: ");
+    private JLabel jlName = new JLabel(settingsHandler.getCompLangName("mf.jl.name"));// = new JLabel("Name: ");
+    private JLabel jlDescription = new JLabel(settingsHandler.getCompLangName("mf.jl.description"));// = new JLabel("Description: ");
+    private JLabel jlAuthor = new JLabel(settingsHandler.getCompLangName("mf.jl.author"));// = new JLabel("Author: ");
+    private JLabel jlVersion = new JLabel(settingsHandler.getCompLangName("mf.jl.version"));// = new JLabel("Version: ");
+    private JLabel jlMCVersion = new JLabel(settingsHandler.getCompLangName("mf.jl.mc_version"));// = new JLabel("MC Version: ");
     private JLabel jlFileGenPath;// = new JLabel("Path of generation: ");
     private JTextField tfName = new JTextField("");
     private JTextField tfDescription = new JTextField("");
@@ -127,15 +122,15 @@ public class MainFrame extends JFrame implements ActionListener {
     private JFileChooser fcSelectFileGenPath = new JFileChooser();
 
     private JPanel jpLowButtons = new JPanel(new BorderLayout(60, 60));
-    private JButton jbAddSkin;// = new JButton("Add Skin");
-    private JButton jbApply;// = new JButton("Generate Skin-Pack");
+    private JButton jbAddSkin = new JButton(settingsHandler.getCompLangName("mf.jb.add_skin"));// = new JButton("Add Skin");
+    private JButton jbApply = new JButton(settingsHandler.getCompLangName("mf.jb.apply"));// = new JButton("Generate Skin-Pack");
     private JPanel jpNewSkinPack = new JPanel(new BorderLayout());
-    public MainFrame() throws IOException {
-        initialiseJSONFiles();
+    public MainFrame(SettingsHandler settingsHandler) throws IOException {
+        this.settingsHandler = settingsHandler;
 
         String os = System.getProperty("os.name").toLowerCase();
         if (!(os.contains("mac") || os.contains("darwin"))) {
-            switch (settings.get("theme")) {
+            switch (settingsHandler.getSettingValue("theme")) {
                 case "light":
                     FlatLightLaf.setup();
                     break;
@@ -149,41 +144,11 @@ public class MainFrame extends JFrame implements ActionListener {
                     FlatOneDarkIJTheme.setup();
             }
         } else {
-            if (settings.get("theme").equals("light")) {
+            if (settingsHandler.getSettingValue("theme").equals("light")) {
                 FlatMacLightLaf.setup();
             } else FlatMacDarkLaf.setup();
         }
 
-        jmFile = new JMenu(languageModules.get("mf.jm.file"));
-        miNewSkinpack = new JMenuItem(languageModules.get("mf.mi.new_skinpack"));
-        miImportSkinpack = new JMenuItem(languageModules.get("mf.mi.import_skinpack"));
-        jmSettings = new JMenu(languageModules.get("mf.jm.settings"));
-        miOpenSettings = new JMenuItem(languageModules.get("mf.mi.open_settings"));
-        jmTheme = new JMenu(languageModules.get("mf.jm.theme"));
-        jmLight = new JMenu(languageModules.get("mf.jm.light"));
-        miLight = new JMenuItem(languageModules.get("mf.mi.light"));
-        miLightExtra = new JMenuItem(languageModules.get("mf.mi.light_extra"));
-        jmDark = new JMenu(languageModules.get("mf.jm.dark"));
-        miDark = new JMenuItem(languageModules.get("mf.mi.dark"));
-        miDarkExtra = new JMenuItem(languageModules.get("mf.mi.dark_extra"));
-        miSystemTheme = new JMenuItem(languageModules.get("mf.mi.sys_theme"));
-        miChooseDefaultSaveLoc = new JMenuItem(languageModules.get("mf.mi.default_save_loc"));
-        jmLanguage = new JMenu(languageModules.get("mf.jm.language"));
-        jbImportSkinPack = new JButton(languageModules.get("mf.mi.import_skinpack"));
-        jrImportMCP = new JRadioButton(languageModules.get("mf.jr.import_mcp"));
-        jrImportMC = new JRadioButton(languageModules.get("mf.jr.import_mc"));
-        jrImportD = new JRadioButton(languageModules.get("mf.jr.import_d"));
-        jbISPNext = new JButton(languageModules.get("mf.jb.isp_next"));
-        jbNewSkinPack = new JButton(languageModules.get("mf.jb.new_skin_pack"));
-        jbImportSkinPack = new JButton(languageModules.get("mf.jb.import_skin_pack"));
-        jlName = new JLabel(languageModules.get("mf.jl.name"));
-        jlDescription = new JLabel(languageModules.get("mf.jl.description"));
-        jlAuthor = new JLabel(languageModules.get("mf.jl.author"));
-        jlVersion = new JLabel(languageModules.get("mf.jl.version"));
-        jlMCVersion = new JLabel(languageModules.get("mf.jl.mc_version"));
-        jlFileGenPath = new JLabel(languageModules.get("mf.jl.file_gen_path"));
-        jbAddSkin = new JButton(languageModules.get("mf.jb.add_skin"));
-        jbApply = new JButton(languageModules.get("mf.jb.apply"));
 
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setSize(700, 460);
@@ -441,25 +406,24 @@ public class MainFrame extends JFrame implements ActionListener {
             JMenuItem miTempLanguage = new JMenuItem(language);
             miTempLanguage.addActionListener((ActionEvent e) -> {
                 if (!language.equals("System Default")) {
-                    settings.put("language", language);
-                    updateSettingsJson(settings, "settings.json");
+                    settingsHandler.setSetting("language", language);
                     settingsChangesMessage();
                 } else {
                     switch (Locale.getDefault().getLanguage()) {
                         case "en":
-                            settings.put("language", "English");
+                            settingsHandler.setSetting("language", "English");
                             break;
                         case "af":
-                            settings.put("language", "Afrikaans");
+                            settingsHandler.setSetting("language", "Afrikaans");
                             break;
                         case "zh":
-                            settings.put("language", "Chinese-Mandarin");
+                            settingsHandler.setSetting("language", "Chinese-Mandarin");
                             break;
                         default:
-                            settings.put("language", "English");
+                            settingsHandler.setSetting("language", "English");
                             Statics.info(this, "System default language unavailable.\nChoosing English instead");
                     }
-                    updateSettingsJson(settings, "settings.json");
+
                     settingsChangesMessage();
                 }
             });
@@ -479,9 +443,7 @@ public class MainFrame extends JFrame implements ActionListener {
 
         this.setJMenuBar(mbMain);
 
-        for (Component jTextComponent : Statics.getAllNamedComponents(contentRoot)) {
-            jTextComponent.setFont(new Font(settings.get("font"), Font.PLAIN, Integer.parseInt(settings.get("size"))));
-        }
+        settingsHandler.doCompFonts(contentRoot);
 
         this.setVisible(true);
     }
@@ -495,7 +457,7 @@ public class MainFrame extends JFrame implements ActionListener {
         } else if (e.getSource() == miImportSkinpack) {
             cardLayout.show(contentRoot, "ImportSkinPack");
 
-            switch (settings.get("defaultimporttype")) {
+            switch (settingsHandler.getSettingValue("defaultimporttype")) {
                 case "importMC":
                     jrImportMC.setSelected(true);
                     break;
@@ -531,26 +493,21 @@ public class MainFrame extends JFrame implements ActionListener {
                     System.out.println("importD");
             }
         } else if (e.getSource() == miLight) {
-            settings.put("theme", "light");
-            updateSettingsJson(settings, "settings.json");
+            settingsHandler.setSetting("theme", "light");
             settingsChangesMessage();
         } else if (e.getSource() == miLightExtra) {
-            settings.put("theme", "rich_light");
-            updateSettingsJson(settings, "settings.json");
+            settingsHandler.setSetting("theme", "rich_light");
             settingsChangesMessage();
         } else if (e.getSource() == miDark) {
-            settings.put("theme", "dark");
-            updateSettingsJson(settings, "settings.json");
+            settingsHandler.setSetting("theme", "dark");
             settingsChangesMessage();
         } else if (e.getSource() == miDarkExtra) {
-            settings.put("theme", "rich_dark");
-            updateSettingsJson(settings, "settings.json");
+            settingsHandler.setSetting("theme", "rich_dark");
             settingsChangesMessage();
         } else if (e.getSource() == miSystemTheme) {
             if (OsThemeDetector.getDetector().isDark()) {
-                settings.put("theme", "dark");
-            } else settings.put("theme", "light");
-            updateSettingsJson(settings, "settings.json");
+                settingsHandler.setSetting("theme", "dark");
+            } else settingsHandler.setSetting("theme", "light");
             settingsChangesMessage();
 
         } else if (e.getSource() == miChooseDefaultSaveLoc) {
@@ -571,8 +528,7 @@ public class MainFrame extends JFrame implements ActionListener {
                 defaultSaveLoc = selectedFileGenPath.getAbsolutePath();
             }
 
-            settings.put("defaultsaveloc", defaultSaveLoc);
-            updateSettingsJson(settings, "settings.json");
+            settingsHandler.setSetting("defaultsaveloc", defaultSaveLoc);
             settingsChangesMessage();
         } else if (e.getSource() == miOpenSettings) {
             settingsFrame = new SettingsFrame();
@@ -580,7 +536,7 @@ public class MainFrame extends JFrame implements ActionListener {
         } else if (e.getSource() == jbImportSkinPack) {
             cardLayout.show(contentRoot, "ImportSkinPack");
 
-            switch (settings.get("defaultimporttype")) {
+            switch (settingsHandler.getSettingValue("defaultimporttype")) {
                 case "importMC":
                     jrImportMC.setSelected(true);
                     break;
@@ -700,40 +656,6 @@ public class MainFrame extends JFrame implements ActionListener {
         }
     }
 
-    public void initialiseJSONFiles() {
-        if (new File("settings.json").exists()) {
-            Gson gson = new Gson();
-            try (FileReader fr = new FileReader("settings.json")) {
-                settings = gson.fromJson(fr, HashMap.class);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            settings.put("theme", "light");
-            settings.put("defaultsaveloc", "");
-            settings.put("language", "English");
-            settings.put("font", "Open Sans");
-            settings.put("size", "12");
-            settings.put("gen_as_cur_lang", "false");
-            settings.put("defaultimporttype", "");
-            updateSettingsJson(settings, "settings.json");
-        }
-
-        InputStream languageJSONIn = getClass().getClassLoader().getResourceAsStream("mcskinner/support_files/" + settings.get("language") + ".json");
-
-        if (languageJSONIn != null) {
-            Gson gsonLanguageModules = new Gson();
-            try (InputStreamReader ir = new InputStreamReader(languageJSONIn, StandardCharsets.UTF_8)) {
-                languageModules = gsonLanguageModules.fromJson(ir, HashMap.class);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "No language file found", "MCSkinner: error", JOptionPane.ERROR_MESSAGE);
-            System.exit(1);
-        }
-    }
-
     public AddSkinFrame getAddSkinFrame() {
         return addSkinFrame;
     }
@@ -743,8 +665,8 @@ public class MainFrame extends JFrame implements ActionListener {
 
     public void saveSkinPack() {
         String langFileName;
-        if (settings.get("gen_as_cur_lang").equals("true")) {
-            langFileName = switch (settings.get("language")) {
+        if (settingsHandler.getSettingValue("gen_as_cur_lang").equals("true")) {
+            langFileName = switch (settingsHandler.getSettingValue("language")) {
                 case "Afrikaans" -> "af_ZA.lang";
                 case "Chinese-Mandarin" -> "zh_CN.lang";
                 default -> "en_US.lang";

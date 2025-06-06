@@ -6,17 +6,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 
 import static com.redfox.mcskinner.MCSkinner.mainFrame;
+import static com.redfox.mcskinner.MCSkinner.settingsHandler;
 
 public class SettingsFrame extends JFrame implements ActionListener {
     Container contentRoot;
 
     String[] themes = {
-            getLanguageModule("mf.jm.light"), getLanguageModule("mf.mi.light_extra"),
-            getLanguageModule("mf.jm.dark"), getLanguageModule("mf.mi.dark_extra")
+            settingsHandler.getCompLangName("mf.jm.light"), settingsHandler.getCompLangName("mf.mi.light_extra"),
+            settingsHandler.getCompLangName("mf.jm.dark"), settingsHandler.getCompLangName("mf.mi.dark_extra")
     };
     String[] fonts = {
             "Open Sans", "Bradley Hand ITC",
@@ -30,14 +29,14 @@ public class SettingsFrame extends JFrame implements ActionListener {
     };
     boolean generateAsCurrentLang = false;
     String[] importTypes = {
-            getLanguageModule("sf.cb_i.import_mc"),
-            getLanguageModule("sf.cb_i.import_mcp"),
-            getLanguageModule("sf.cb_i.import_d"),
-            getLanguageModule("sf.cb_i_importT_none")
+            settingsHandler.getCompLangName("sf.cb_i.import_mc"),
+            settingsHandler.getCompLangName("sf.cb_i.import_mcp"),
+            settingsHandler.getCompLangName("sf.cb_i.import_d"),
+            settingsHandler.getCompLangName("sf.cb_i_importT_none")
     };
 
-    JButton jbCancel = new JButton(getLanguageModule("sf.jb.cancel"));
-    JButton jbApply = new JButton(getLanguageModule("sf.jb.apply"));
+    JButton jbCancel = new JButton(settingsHandler.getCompLangName("sf.jb.cancel"));
+    JButton jbApply = new JButton(settingsHandler.getCompLangName("sf.jb.apply"));
 
     JPanel jpSouthPanel = new JPanel();
 
@@ -55,57 +54,57 @@ public class SettingsFrame extends JFrame implements ActionListener {
     JPanel jpLanguageS = new JPanel();
     JPanel jpOtherS = new JPanel();
 
-    JLabel jlAppearance = new JLabel(getLanguageModule("sf.jl.appearance"));
-    JLabel jlLanguage = new JLabel(getLanguageModule("sf.jl.language"));
-    JLabel jlOther = new JLabel(getLanguageModule("sf.jl.other"));
+    JLabel jlAppearance = new JLabel(settingsHandler.getCompLangName("sf.jl.appearance"));
+    JLabel jlLanguage = new JLabel(settingsHandler.getCompLangName("sf.jl.language"));
+    JLabel jlOther = new JLabel(settingsHandler.getCompLangName("sf.jl.other"));
 
     //jpAppearance
     JPanel jpAppearanceC = new JPanel(new GridLayout(0, 2));
     JPanel jpAppearanceE = new JPanel(new GridLayout(0, 1));
 
-    JLabel jlTheme = new JLabel(getLanguageModule("sf.jl.theme"));
+    JLabel jlTheme = new JLabel(settingsHandler.getCompLangName("sf.jl.theme"));
     JComboBox<String> cbTheme = new JComboBox<>(themes);
-    JButton jbThemeReset = new JButton(getLanguageModule("sf.jb.reset"));
+    JButton jbThemeReset = new JButton(settingsHandler.getCompLangName("sf.jb.reset"));
 
-    JLabel jlFont = new JLabel(getLanguageModule("sf.jl.font"));
+    JLabel jlFont = new JLabel(settingsHandler.getCompLangName("sf.jl.font"));
     JComboBox<String> cbFont = new JComboBox<>(fonts);
-    JButton jbFontReset = new JButton(getLanguageModule("sf.jb.reset"));
+    JButton jbFontReset = new JButton(settingsHandler.getCompLangName("sf.jb.reset"));
 
-    JLabel jlTextSize = new JLabel(getLanguageModule("sf.jl.text_size"));
+    JLabel jlTextSize = new JLabel(settingsHandler.getCompLangName("sf.jl.text_size"));
     JSpinner jsTextSize = new JSpinner(new SpinnerNumberModel(12, 1, 70, 2));
-    JButton jbTextSizeReset = new JButton(getLanguageModule("sf.jb.reset"));
+    JButton jbTextSizeReset = new JButton(settingsHandler.getCompLangName("sf.jb.reset"));
 
     //jpLanguage
     JPanel jpLanguageC = new JPanel(new GridLayout(0, 2));
     JPanel jpLanguageE = new JPanel(new GridLayout(0, 1));
 
-    JLabel jlSelectLanguage = new JLabel(getLanguageModule("sf.jl.language"));
+    JLabel jlSelectLanguage = new JLabel(settingsHandler.getCompLangName("sf.jl.language"));
     JComboBox<String> cbSelectLanguage = new JComboBox<>(languages);
-    JButton jbSelectLanguageReset = new JButton(getLanguageModule("sf.jb.reset"));
+    JButton jbSelectLanguageReset = new JButton(settingsHandler.getCompLangName("sf.jb.reset"));
 
-    JLabel jlGenerateAsCurrentLang = new JLabel(getLanguageModule("sf.jl.gen_as_cur_lang"));
+    JLabel jlGenerateAsCurrentLang = new JLabel(settingsHandler.getCompLangName("sf.jl.gen_as_cur_lang"));
     JCheckBox jcGenerateAsCurrentLang = new JCheckBox();
-    JButton jbGenerateAsCurrentLangReset = new JButton(getLanguageModule("sf.jb.reset"));
+    JButton jbGenerateAsCurrentLangReset = new JButton(settingsHandler.getCompLangName("sf.jb.reset"));
 
     //jpOther
     JPanel jpOtherC = new JPanel(new GridLayout(0, 2));
     JPanel jpOtherE = new JPanel(new GridLayout(0, 1));
 
-    JLabel jlDefaultSaveLoc = new JLabel(getLanguageModule("mf.mi.default_save_loc"));
+    JLabel jlDefaultSaveLoc = new JLabel(settingsHandler.getCompLangName("mf.mi.default_save_loc"));
     JPanel jpDefaultSaveLoc = new JPanel(new BorderLayout(1, 1));
     JTextField tfDefaultSaveLoc = new JTextField("");
     JButton jbDefaultSaveLoc = new JButton(mainFrame.openFileIcon);
     JFileChooser fcDefaultSaveLoc = new JFileChooser();
-    JButton jbDefaultSaveLocReset = new JButton(getLanguageModule("sf.jb.reset"));
+    JButton jbDefaultSaveLocReset = new JButton(settingsHandler.getCompLangName("sf.jb.reset"));
 
-    JLabel jlDefaultImportType = new JLabel(getLanguageModule("sf.jl.default_import_type"));
+    JLabel jlDefaultImportType = new JLabel(settingsHandler.getCompLangName("sf.jl.default_import_type"));
     JComboBox<String> cbDefaultImportType = new JComboBox<>(importTypes);
-    JButton jbDefaultImportTypeReset = new JButton(getLanguageModule("sf.jb.reset"));
+    JButton jbDefaultImportTypeReset = new JButton(settingsHandler.getCompLangName("sf.jb.reset"));
 
     public SettingsFrame() {
         this.setSize(600, 360);
         this.setIconImage(mainFrame.appIcon.getImage());
-        this.setTitle(getLanguageModule("sf.title.title"));
+        this.setTitle(settingsHandler.getCompLangName("sf.title.title"));
         this.setResizable(true);
         this.setLocationRelativeTo(mainFrame);
         contentRoot = this.getContentPane();
@@ -121,7 +120,7 @@ public class SettingsFrame extends JFrame implements ActionListener {
 
         jcGenerateAsCurrentLang.addActionListener(this);
 
-        switch (mainFrame.settings.get("theme")) {
+        switch (settingsHandler.getSettingValue("theme")) {
             case "rich_light" -> cbTheme.setSelectedIndex(1);
             case "dark" -> cbTheme.setSelectedIndex(2);
             case "rich_dark" -> cbTheme.setSelectedIndex(3);
@@ -129,7 +128,7 @@ public class SettingsFrame extends JFrame implements ActionListener {
         }
         boolean fontsIMatch = false;
         for (int i = 0; i < fonts.length; i++) {
-            if (fonts[i].equals(mainFrame.settings.get("font"))) {
+            if (fonts[i].equals(settingsHandler.getSettingValue("font"))) {
                 cbFont.setSelectedIndex(i);
                 fontsIMatch = true;
             }
@@ -137,18 +136,18 @@ public class SettingsFrame extends JFrame implements ActionListener {
         if (!fontsIMatch) {
             cbFont.setSelectedIndex(0);
         }
-        jsTextSize.setValue(Integer.parseInt(mainFrame.settings.get("size")));
+        jsTextSize.setValue(Integer.parseInt(settingsHandler.getSettingValue("size")));
 
-        switch (mainFrame.settings.get("language")) {
+        switch (settingsHandler.getSettingValue("language")) {
             case "Afrikaans" -> cbSelectLanguage.setSelectedIndex(1);
             case "Chinese-Mandarin" -> cbSelectLanguage.setSelectedIndex(2);
             default -> cbSelectLanguage.setSelectedIndex(0);
         }
-        jcGenerateAsCurrentLang.setSelected(Boolean.parseBoolean(mainFrame.settings.get("gen_as_cur_lang")));
-        generateAsCurrentLang = Boolean.parseBoolean(mainFrame.settings.get("gen_as_cur_lang"));
+        jcGenerateAsCurrentLang.setSelected(Boolean.parseBoolean(settingsHandler.getSettingValue("gen_as_cur_lang")));
+        generateAsCurrentLang = Boolean.parseBoolean(settingsHandler.getSettingValue("gen_as_cur_lang"));
 
-        tfDefaultSaveLoc.setText(mainFrame.settings.get("defaultsaveloc"));
-        switch (mainFrame.settings.get("defaultimporttype")) {
+        tfDefaultSaveLoc.setText(settingsHandler.getSettingValue("defaultsaveloc"));
+        switch (settingsHandler.getSettingValue("defaultimporttype")) {
             case "importMC" -> cbDefaultImportType.setSelectedIndex(0);
             case "importMCP" -> cbDefaultImportType.setSelectedIndex(1);
             case "importD" -> cbDefaultImportType.setSelectedIndex(2);
@@ -215,9 +214,9 @@ public class SettingsFrame extends JFrame implements ActionListener {
         jpLanguage.add(jpLanguageS, BorderLayout.SOUTH);
         jpOther.add(jpOtherS, BorderLayout.SOUTH);
 
-        tpMenu.addTab(getLanguageModule("sf.tn.appearance"), jpAppearance);
-        tpMenu.addTab(getLanguageModule("sf.tn.language"), jpLanguage);
-        tpMenu.addTab(getLanguageModule("sf.tn.other"), jpOther);
+        tpMenu.addTab(settingsHandler.getCompLangName("sf.tn.appearance"), jpAppearance);
+        tpMenu.addTab(settingsHandler.getCompLangName("sf.tn.language"), jpLanguage);
+        tpMenu.addTab(settingsHandler.getCompLangName("sf.tn.other"), jpOther);
 
         jpSouthPanel.add(jbApply);
         jpSouthPanel.add(jbCancel);
@@ -225,10 +224,7 @@ public class SettingsFrame extends JFrame implements ActionListener {
         contentRoot.add(tpMenu);
         contentRoot.add(jpSouthPanel, BorderLayout.SOUTH);
 
-        ArrayList<Component> jTextComponents = Statics.getAllNamedComponents(contentRoot);
-        for (Component jTextComponent : jTextComponents) {
-            jTextComponent.setFont(new Font(mainFrame.settings.get("font"), Font.PLAIN, Integer.parseInt(mainFrame.settings.get("size"))));
-        }
+        settingsHandler.doCompFonts(contentRoot);
 
         this.setVisible(true);
     }
@@ -264,13 +260,13 @@ public class SettingsFrame extends JFrame implements ActionListener {
                     "rich_dark"
             };
 
-            mainFrame.settings.put("theme", themesForS[cbTheme.getSelectedIndex()]);
-            mainFrame.settings.put("font", fonts[cbFont.getSelectedIndex()]);
-            mainFrame.settings.put("size", String.valueOf((int) jsTextSize.getValue()));
-            mainFrame.settings.put("language", languages[cbSelectLanguage.getSelectedIndex()]);
-            mainFrame.settings.put("gen_as_cur_lang", Boolean.toString(generateAsCurrentLang));
-            mainFrame.settings.put("defaultsaveloc", tfDefaultSaveLoc.getText());
-            mainFrame.settings.put("defaultimporttype", switch (cbDefaultImportType.getSelectedIndex()) {
+            settingsHandler.setSetting("theme", themesForS[cbTheme.getSelectedIndex()]);
+            settingsHandler.setSetting("font", fonts[cbFont.getSelectedIndex()]);
+            settingsHandler.setSetting("size", String.valueOf((int) jsTextSize.getValue()));
+            settingsHandler.setSetting("language", languages[cbSelectLanguage.getSelectedIndex()]);
+            settingsHandler.setSetting("gen_as_cur_lang", Boolean.toString(generateAsCurrentLang));
+            settingsHandler.setSetting("defaultsaveloc", tfDefaultSaveLoc.getText());
+            settingsHandler.setSetting("defaultimporttype", switch (cbDefaultImportType.getSelectedIndex()) {
                 case 0 -> "importMC";
                 case 1 -> "importMCP";
                 case 2 -> "importD";
@@ -281,8 +277,5 @@ public class SettingsFrame extends JFrame implements ActionListener {
             this.dispose();
             mainFrame.settingsChangesMessage();
         }
-    }
-    private String getLanguageModule(String key) {
-        return mainFrame.languageModules.get(key);
     }
 }

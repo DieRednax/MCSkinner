@@ -124,7 +124,7 @@ public class Statics {
     }
 
     //privates
-    private static boolean hasText(Component component) {
+    public static boolean hasText(Component component) {
         try {
             // Check if the component has a getText() method and returns non-null, non-empty string
             Method getTextMethod = component.getClass().getMethod("getText");
