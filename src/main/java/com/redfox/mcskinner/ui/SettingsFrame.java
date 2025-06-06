@@ -273,7 +273,6 @@ public class SettingsFrame extends JFrame implements ActionListener {
                 default -> "";
             });
 
-            mainFrame.updateSettingsJson(mainFrame.settings, "settings.json");
             this.dispose();
             mainFrame.settingsChangesMessage();
         }

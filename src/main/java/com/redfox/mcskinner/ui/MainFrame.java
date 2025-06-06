@@ -41,9 +41,6 @@ public class MainFrame extends JFrame implements ActionListener {
     public final ImageIcon appIcon = new ImageIcon(appIconInputStream.readAllBytes());
 
 
-    public HashMap<String, String> settings = new HashMap<>();
-    public HashMap<String, String> languageModules = new HashMap<>();
-
     private SettingsHandler settingsHandler = MCSkinner.settingsHandler;
 
     private String name = "";
@@ -206,9 +203,9 @@ public class MainFrame extends JFrame implements ActionListener {
 
             JLabel jlLabel = new JLabel();
 
-            JButton jbBack = new JButton(languageModules.get("mf.jb.isp_back"));
+            JButton jbBack = new JButton(settingsHandler.getCompLangName("mf.jb.isp_back"));
             JPanel jpMiddlePanel = new JPanel();
-            JButton jbImport = new JButton(languageModules.get("mf.jb.isp_import"));
+            JButton jbImport = new JButton(settingsHandler.getCompLangName("mf.jb.isp_import"));
 
             jpNorthLabel.setPreferredSize(new Dimension(100, 110));
             jpSouthNorth.setPreferredSize(new Dimension(100, 160));
@@ -223,7 +220,7 @@ public class MainFrame extends JFrame implements ActionListener {
             jpSouth.add(jpSouthNorth, BorderLayout.NORTH);
 
 
-            JButton jbChooseInGameSkinPack = new JButton(languageModules.get("mf.jb.choose_in_game_skinpack"));
+            JButton jbChooseInGameSkinPack = new JButton(settingsHandler.getCompLangName("mf.jb.choose_in_game_skinpack"));
             JButton jbChoosePathOfGen = new JButton(openFileIcon);
             JTextField tfChoosePathOfGen = new JTextField();
             JFileChooser fcChoosePathOfGen = new JFileChooser();
@@ -274,7 +271,7 @@ public class MainFrame extends JFrame implements ActionListener {
             });
             switch (i) {
                 case 0:
-                    jlLabel.setText(languageModules.get("mf.jl.import_mc.label"));
+                    jlLabel.setText(settingsHandler.getCompLangName("mf.jl.import_mc.label"));
 
                     jbChooseInGameSkinPack.addActionListener((ActionEvent e) -> {
                         fcChoosePathOfGen.setDialogTitle("MCSkinner: Choose path of generation");
@@ -294,7 +291,7 @@ public class MainFrame extends JFrame implements ActionListener {
                     jpImportMC.add(jpSouth, BorderLayout.SOUTH);
                     break;
                 case 1:
-                    jlLabel.setText(languageModules.get("mf.jl.import_mcp.label"));
+                    jlLabel.setText(settingsHandler.getCompLangName("mf.jl.import_mcp.label"));
 
                     jbChoosePathOfGen.addActionListener((ActionEvent e) -> {
                         tfChoosePathOfGen.setText(Statics.selectFile(this, fcChoosePathOfGen, "MCSkinner: Choose path of generation", "*.mcpack", "mcpack"));
@@ -307,7 +304,7 @@ public class MainFrame extends JFrame implements ActionListener {
                     jpImportMCP.add(jpSouth, BorderLayout.SOUTH);
                     break;
                 case 2:
-                    jlLabel.setText(languageModules.get("mf.jl.import_d.label"));
+                    jlLabel.setText(settingsHandler.getCompLangName("mf.jl.import_d.label"));
 
                     jbChoosePathOfGen.addActionListener((ActionEvent e) -> {
                         tfChoosePathOfGen.setText(Statics.selectDir(this, fcChoosePathOfGen, "MCSkinner: Choose path of generation"));
@@ -550,7 +547,7 @@ public class MainFrame extends JFrame implements ActionListener {
             SwingUtilities.updateComponentTreeUI(this);
         } else if (e.getSource() == jbNewSkinPack) {
             cardLayout.show(contentRoot, "NewSkinPack");
-            this.setTitle(languageModules.get("mf.title.title"));
+            this.setTitle(settingsHandler.getCompLangName("mf.title.title"));
 
             this.setSize(700, 550);
 
