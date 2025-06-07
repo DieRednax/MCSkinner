@@ -11,9 +11,11 @@ import com.redfox.mcskinner.MCSkinner;
 import com.redfox.mcskinner.SettingsHandler;
 import com.redfox.mcskinner.SkinPackGen;
 import com.redfox.mcskinner.Statics;
+
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -113,10 +115,6 @@ public class MainFrame extends JFrame implements ActionListener {
     private JTextField tfMCVersion1 = new JTextField("1");
     private JTextField tfMCVersion2 = new JTextField("21");
     private JTextField tfMCVersion3 = new JTextField("71");
-    private JPanel jpFileGenPath = new JPanel(new BorderLayout(2, 2));
-    private JTextField tfFileGenPath;
-    private JButton jbSelctFileGenPath = new JButton();
-    private JFileChooser fcSelectFileGenPath = new JFileChooser();
 
     private JPanel jpLowButtons = new JPanel(new BorderLayout(60, 60));
     private JButton jbAddSkin = new JButton(settingsHandler.getCompLangName("mf.jb.add_skin"));// = new JButton("Add Skin");
@@ -326,12 +324,6 @@ public class MainFrame extends JFrame implements ActionListener {
         jpMCVersion.add(tfMCVersion2);
         jpMCVersion.add(tfMCVersion3);
 
-        jbSelctFileGenPath.addActionListener(this);
-        jbSelctFileGenPath.setIcon(openFileIcon);
-
-//        jpFileGenPath.add(tfFileGenPath, BorderLayout.CENTER);
-//        jpFileGenPath.add(jbSelctFileGenPath, BorderLayout.EAST);
-
         jpCenterGrid.add(jlName);
         jpCenterGrid.add(tfName);
 
@@ -529,7 +521,6 @@ public class MainFrame extends JFrame implements ActionListener {
             settingsChangesMessage();
         } else if (e.getSource() == miOpenSettings) {
             settingsFrame = new SettingsFrame();
-
         } else if (e.getSource() == jbImportSkinPack) {
             cardLayout.show(contentRoot, "ImportSkinPack");
 
@@ -552,21 +543,6 @@ public class MainFrame extends JFrame implements ActionListener {
             this.setSize(700, 550);
 
             SwingUtilities.updateComponentTreeUI(this);
-        } else if (e.getSource() == jbSelctFileGenPath) {
-            SwingUtilities.updateComponentTreeUI(fcSelectFileGenPath);
-            fcSelectFileGenPath.invalidate();
-            fcSelectFileGenPath.validate();
-            fcSelectFileGenPath.repaint();
-
-            fcSelectFileGenPath.setDialogTitle("MCSkinner: Choose generation directory");
-            fcSelectFileGenPath.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            fcSelectFileGenPath.setCurrentDirectory(new File(System.getProperty("user.home")));
-
-            int response = fcSelectFileGenPath.showOpenDialog(this);
-            if (response == JFileChooser.APPROVE_OPTION) {
-                File selectedFileGenPath = fcSelectFileGenPath.getSelectedFile();
-                tfFileGenPath.setText(selectedFileGenPath.getAbsolutePath());
-            } else tfFileGenPath.setText("> This can't be empty");
         } else if (e.getSource() == jbAddSkin) {
             addSkinFrame = new AddSkinFrame();
         } else if (e.getSource() == jbApply) {
@@ -651,13 +627,6 @@ public class MainFrame extends JFrame implements ActionListener {
             Statics.warning(this, "You must insert a " + tfWarnName);
             return false;
         }
-    }
-
-    public AddSkinFrame getAddSkinFrame() {
-        return addSkinFrame;
-    }
-    public SettingsFrame getSettingsFrame() {
-        return settingsFrame;
     }
 
     public void saveSkinPack() {
