@@ -19,15 +19,18 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-public class MainFrame extends JFrame implements ActionListener {
+public class MainFrame extends JFrame implements ActionListener, WindowListener {
     private ArrayList<HashMap<String, String>> skins = new ArrayList<>();
     private String importType = "importMCP";
 
@@ -114,13 +117,13 @@ public class MainFrame extends JFrame implements ActionListener {
     private JPanel jpMCVersion = new JPanel(new GridLayout(1, 3));
     private JTextField tfMCVersion1 = new JTextField("1");
     private JTextField tfMCVersion2 = new JTextField("21");
-    private JTextField tfMCVersion3 = new JTextField("71");
+    private JTextField tfMCVersion3 = new JTextField("80");
 
     private JPanel jpLowButtons = new JPanel(new BorderLayout(60, 60));
     private JButton jbAddSkin = new JButton(settingsHandler.getCompLangName("mf.jb.add_skin"));// = new JButton("Add Skin");
     private JButton jbApply = new JButton(settingsHandler.getCompLangName("mf.jb.apply"));// = new JButton("Generate Skin-Pack");
     private JPanel jpNewSkinPack = new JPanel(new BorderLayout());
-    public MainFrame(SettingsHandler settingsHandler) throws IOException {
+    public MainFrame(SettingsHandler settingsHandler, String inputMCPackString) throws IOException {
         this.settingsHandler = settingsHandler;
 
         String os = System.getProperty("os.name").toLowerCase();
@@ -151,6 +154,7 @@ public class MainFrame extends JFrame implements ActionListener {
         this.setTitle("MCSkinner");
         this.setResizable(true);
         this.setLocationRelativeTo(null);
+        this.addWindowListener(this);
         contentRoot = this.getContentPane();
 
         jbNewSkinPack.addActionListener(this);
@@ -228,7 +232,6 @@ public class MainFrame extends JFrame implements ActionListener {
             AtomicReference<String> tempSTRChoosePathOfGen = new AtomicReference<>("");
             jbImport.addActionListener((ActionEvent e) -> {
                 String strChoosePathOfGen = "";
-                List<String> images = new ArrayList<>();
 
                 switch (importType) {
                     case "importD":
@@ -242,7 +245,7 @@ public class MainFrame extends JFrame implements ActionListener {
                                 strChoosePathOfGen = tfChoosePathOfGen.getText() + ".mcpack";
                             } else strChoosePathOfGen = tfChoosePathOfGen.getText();
 
-                            String newFilePath = "temp/" + UUID.randomUUID();
+                            String newFilePath = System.getProperty("java.io.tmpdir") + "MCSkinner/" + UUID.randomUUID();
                             Statics.unZipFile(Paths.get(strChoosePathOfGen), Paths.get(newFilePath));
                             strChoosePathOfGen = newFilePath;
                         } else Statics.warning(this, "You must choose a mcpack file");
@@ -253,19 +256,7 @@ public class MainFrame extends JFrame implements ActionListener {
                         } else Statics.warning(this, "You must choose a skinpack");
                 }
 
-                try {
-                    images = Files.walk(Paths.get(strChoosePathOfGen))
-                            .filter(p -> Files.isRegularFile(p) && p.toString().toLowerCase().endsWith(".png"))
-                            .map(p -> p.toAbsolutePath().toString())
-                            .collect(Collectors.toList());
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-
-                importSkinPack(new File(strChoosePathOfGen + "/manifest.json"), new File(strChoosePathOfGen + "/skins.json"), (ArrayList<String>) images);
-
-                cardLayout.show(contentRoot, "NewSkinPack");
-                this.setSize(700, 550);
+                importSkinPackFromDir(strChoosePathOfGen);
             });
             switch (i) {
                 case 0:
@@ -434,7 +425,16 @@ public class MainFrame extends JFrame implements ActionListener {
 
         settingsHandler.doCompFonts(contentRoot);
 
+        if (inputMCPackString != null) {
+            String newFilePath = System.getProperty("java.io.tmpdir") + "MCSkinner/" + UUID.randomUUID();
+            Statics.unZipFile(Paths.get(inputMCPackString), Paths.get(newFilePath));
+            importSkinPackFromDir(newFilePath);
+        }
+
+        SwingUtilities.updateComponentTreeUI(this);
         this.setVisible(true);
+
+
     }
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -608,14 +608,6 @@ public class MainFrame extends JFrame implements ActionListener {
             }
         }
     }
-    public void updateSettingsJson(HashMap<String, String> settings, String fileName) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        try (FileWriter fw = new FileWriter(fileName)) {
-            gson.toJson(settings, fw);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     public void settingsChangesMessage() {
         Statics.info(this, "You must restart MCSkinner to apply your changes");
@@ -641,7 +633,7 @@ public class MainFrame extends JFrame implements ActionListener {
 
         SkinPackGen skinPackGen = new SkinPackGen(skins,
                 name, author, description, version, mcVersion,
-                "temp", langFileName);
+                System.getProperty("java.io.tmpdir") + "MCSkinner", langFileName);
 
         String json = skinPackGen.genSkinsJSON();
         System.out.println("skins.json: \n" + json + "\n");
@@ -661,7 +653,7 @@ public class MainFrame extends JFrame implements ActionListener {
         switch (saveAsFrame.selectedSaveType) {
             case "importMC":
                 if (!System.getProperty("os.name").toLowerCase().contains("mac") || !System.getProperty("os.name").toLowerCase().contains("darwin")) {
-                    Statics.copyDir(new File("temp/" + name), new File(System.getProperty("user.home") + "\\AppData\\Local\\Packages\\Microsoft.MinecraftUWP_8wekyb3d8bbwe\\LocalState\\games\\com.mojang\\skin_packs\\" + name));
+                    Statics.copyDir(new File(System.getProperty("java.io.tmpdir") + "MCSkinner/" + name), new File(System.getProperty("user.home") + "\\AppData\\Local\\Packages\\Microsoft.MinecraftUWP_8wekyb3d8bbwe\\LocalState\\games\\com.mojang\\skin_packs\\" + name));
                     System.out.println("Generated skin-pack at: " + System.getProperty("user.home") + "\\AppData\\Local\\Packages\\Microsoft.MinecraftUWP_8wekyb3d8bbwe\\LocalState\\games\\com.mojang\\skin_packs" + name);
                 } else
                     Statics.warning(saveAsFrame, "Minecraft bedrock is not supported on MacOS, so you cannot import this pack into the game");
@@ -671,24 +663,19 @@ public class MainFrame extends JFrame implements ActionListener {
                 String mcpackPath = saveAsFrame.getStrTFSelectedDirText();
 
                 if (mcpackPath.toLowerCase().endsWith(".mcpack")) {
-                    Statics.zipFile(Paths.get("temp/" + name), Paths.get(saveAsFrame.getStrTFSelectedDirText()));
+                    Statics.zipFile(Paths.get(System.getProperty("java.io.tmpdir") + "MCSkinner/" + name), Paths.get(saveAsFrame.getStrTFSelectedDirText()));
                 } else {
-                    Statics.zipFile(Paths.get("temp/" + name), Paths.get(saveAsFrame.getStrTFSelectedDirText() + "/" + name + ".mcpack"));
+                    Statics.zipFile(Paths.get(System.getProperty("java.io.tmpdir") + "MCSkinner/" + name), Paths.get(saveAsFrame.getStrTFSelectedDirText() + "/" + name + ".mcpack"));
                 }
 
                 saveAsFrame.dispose();
                 break;
             case "saveD":
-                Statics.copyDir(new File("temp/" + name), new File(saveAsFrame.getStrTFSelectedDirText() + "/" + name));
+                Statics.copyDir(new File(System.getProperty("java.io.tmpdir") + "MCSkinner/" + name), new File(saveAsFrame.getStrTFSelectedDirText() + "/" + name));
                 saveAsFrame.dispose();
         }
 
         this.setSize(700, 460);
-        try {
-            FileUtils.deleteDirectory(new File("temp"));
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
     }
     public void importSkinPack(File manifestFile, File skinsFile, ArrayList<String> images) {
         try {
@@ -709,5 +696,65 @@ public class MainFrame extends JFrame implements ActionListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    private void importSkinPackFromDir(String dirPath) {
+        List<String> images = new ArrayList<>();
+
+        try {
+            images = Files.walk(Paths.get(dirPath))
+                    .filter(p -> Files.isRegularFile(p) && p.toString().toLowerCase().endsWith(".png"))
+                    .map(p -> p.toAbsolutePath().toString())
+                    .collect(Collectors.toList());
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+        importSkinPack(new File(dirPath + "/manifest.json"), new File(dirPath + "/skins.json"), (ArrayList<String>) images);
+
+        cardLayout.show(contentRoot, "NewSkinPack");
+        this.setSize(700, 550);
+    }
+
+    @Override
+    public void windowOpened(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowClosing(WindowEvent e) {
+        try {
+            Files.walk(new File(System.getProperty("java.io.tmpdir"), "MCSkinner").toPath())
+                    .sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .forEach(File::delete);
+        } catch (IOException ex) {
+            System.err.println("Stacktrace: " + ex.getMessage());
+        }
+        System.out.println(System.getProperty("java.io.tmpdir") + "MCSkinner" + " deleted");
+    }
+
+    @Override
+    public void windowClosed(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowIconified(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowDeiconified(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowActivated(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowDeactivated(WindowEvent e) {
+
     }
 }
