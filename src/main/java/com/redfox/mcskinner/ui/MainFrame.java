@@ -549,7 +549,7 @@ public class MainFrame extends JFrame implements ActionListener, WindowListener 
             version = tfVersion1.getText() + ", " + tfVersion2.getText() + ", " + tfVersion3.getText();
             if (Integer.parseInt(tfMCVersion1.getText()) <= 1
                 && Integer.parseInt(tfMCVersion2.getText()) <= 21
-                && Integer.parseInt(tfMCVersion3.getText())  <= 71) {
+                && Integer.parseInt(tfMCVersion3.getText())  <= 82) {
                 mcVersion = tfMCVersion1.getText() + ", " + tfMCVersion2.getText() + ", " + tfMCVersion3.getText();
 
                 if (mainFrameCorrect(tfName, "skin-pack name")
