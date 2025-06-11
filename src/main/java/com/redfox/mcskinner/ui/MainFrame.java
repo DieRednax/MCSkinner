@@ -564,7 +564,7 @@ public class MainFrame extends JFrame implements ActionListener, WindowListener 
 
                 }
             } else {
-                Statics.warning(this, "The MC Version must be 1 21 70 or lower");
+                Statics.warning(this, "The MC Version must be 1 21 82 or lower");
             }
         } else if (e.getSource() == addSkinFrame.jbApply) {
 
