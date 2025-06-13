@@ -677,7 +677,7 @@ public class MainFrame extends JFrame implements ActionListener, WindowListener 
 
         this.setSize(700, 460);
     }
-    public void importSkinPack(File manifestFile, File skinsFile, ArrayList<String> images) {
+    public void importSkinPack(File manifestFile, File skinsFile, ArrayList<String> images, File languageFile) {
         try {
             tfName.setText(SkinPackGen.getSkinpackName(manifestFile));
             tfDescription.setText(SkinPackGen.getSkinpackDescription(manifestFile));
@@ -692,7 +692,7 @@ public class MainFrame extends JFrame implements ActionListener, WindowListener 
             tfMCVersion3.setText(Integer.toString(SkinPackGen.getSkinpackMCVersion(manifestFile)[2]));
 
 
-            skins = SkinPackGen.getSkinpackSkins(skinsFile, images);
+            skins = SkinPackGen.getSkinpackSkins(skinsFile, languageFile, images);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -709,7 +709,20 @@ public class MainFrame extends JFrame implements ActionListener, WindowListener 
             ex.printStackTrace();
         }
 
-        importSkinPack(new File(dirPath + "/manifest.json"), new File(dirPath + "/skins.json"), (ArrayList<String>) images);
+        ArrayList<String> languagesJSONFile = new ArrayList<>();
+        try {
+            Gson gson = new Gson();
+            FileReader fr = new FileReader(dirPath + "/texts/languages.json");
+            languagesJSONFile = gson.fromJson(fr, ArrayList.class);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        importSkinPack(
+                new File(dirPath + "/manifest.json"),
+                new File(dirPath + "/skins.json"),
+                (ArrayList<String>) images,
+                new File(dirPath + "/texts/" + new File(languagesJSONFile.getFirst() + ".lang")));
 
         cardLayout.show(contentRoot, "NewSkinPack");
         this.setSize(700, 550);

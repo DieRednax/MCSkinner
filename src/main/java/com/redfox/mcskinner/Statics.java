@@ -5,10 +5,7 @@ import org.apache.commons.io.FileUtils;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UncheckedIOException;
+import java.io.*;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -74,6 +71,21 @@ public class Statics {
             }
         } catch (IOException e) {
             System.err.println("Stacktrace: " + e);
+        }
+    }
+    static public String readFile(File file) {
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            StringBuilder sb = new StringBuilder();
+
+            while ((line = br.readLine()) != null) {
+                sb.append(line).append("\n");
+            }
+
+            return sb.toString();
+        } catch (IOException e) {
+            System.err.println("Stacktrace: " + e.getMessage());
+            return null;
         }
     }
 

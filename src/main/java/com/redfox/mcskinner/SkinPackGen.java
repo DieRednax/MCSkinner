@@ -198,7 +198,7 @@ public class SkinPackGen {
         return " [\n\t\"" + langFileName.replaceAll("\\.lang", "") + "\"\n]";
     }
 
-    private void writeFile(String input, File file) {
+    private static void writeFile(String input, File file) {
         File parentDirectory = file.getParentFile();
         if (parentDirectory != null && !parentDirectory.exists()) {
             parentDirectory.mkdirs();
@@ -210,7 +210,7 @@ public class SkinPackGen {
             System.err.println("Error writing to file " + file + ": " + e.getMessage());
         }
     }
-    private void copyFile(Path sourcePath, Path destinationPath) {
+    private static void copyFile(Path sourcePath, Path destinationPath) {
         try {
             Files.copy(sourcePath, destinationPath.resolve(sourcePath.getFileName()), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
@@ -235,12 +235,12 @@ public class SkinPackGen {
     }
     public static String getSkinpackDescription(File skinpackManifestFile) throws IOException {
         if (skinpackManifestFile.exists()) {
-            return (String) getImportedManifestAttribute(skinpackManifestFile, "header", "description");
+            return ((String) getImportedManifestAttribute(skinpackManifestFile, "header", "description")).replaceAll(" - generated with MCSkinner \\(by RedFox\\)", "");
         } else throw new IOException("Imported pack manifest file not found");
     }
     public static String getSkinpackAuthor(File skinpackManifestFile) throws IOException {
         if (skinpackManifestFile.exists()) {
-            return ((ArrayList<String>) getImportedManifestAttribute(skinpackManifestFile, "metadata", "authors")).get(0);
+            return (((ArrayList<String>) getImportedManifestAttribute(skinpackManifestFile, "metadata", "authors")).get(0)).replaceAll("MCSkinner user: ", "");
         } else throw new IOException("Imported pack manifest file not found");
     }
     public static int[] getSkinpackVersion(File skinpackManifestFile) throws IOException {
@@ -260,7 +260,23 @@ public class SkinPackGen {
         } else throw new IOException("Imported pack manifest file not found");
     }
 
-    public static ArrayList<HashMap<String, String>> getSkinpackSkins(File skinpackSkinsFile, ArrayList<String> skinpackImages) throws IOException {
+    public static HashMap<String, String> getLanguageModules(File skinpackLanguageFile) throws IOException {
+       HashMap<String, String> languageModules = new HashMap<>();
+
+       BufferedReader br = new BufferedReader(new FileReader(skinpackLanguageFile));
+       String line;
+       while ((line = br.readLine()) != null) {
+           if (line.trim().isEmpty() || line.trim().startsWith("#")) continue;
+
+           String[] parts = line.split("=", 2);
+           if (parts.length == 2) {
+               languageModules.put(parts[0].trim(), parts[1].trim());
+           }
+       }
+       return languageModules;
+
+    }
+    public static ArrayList<HashMap<String, String>> getSkinpackSkins(File skinpackSkinsFile, File languageFile, ArrayList<String> skinpackImages) throws IOException {
         if (skinpackSkinsFile.exists()) {
 //            HashMap<String, Object> staticSkinsJson;
 //            Gson gson = new Gson();
@@ -278,10 +294,12 @@ public class SkinPackGen {
             ArrayList<HashMap<String, String>> skinpackSkins = new ArrayList<>();
 
             for (HashMap<String, String> skinpackSkin : skinpackSkinsFound) {
+                final String langPrefix = "skin." + staticSkinsJson.get("localization_name") + ".";
+
                 HashMap<String, String> formattedSkin = new HashMap<>();
 
                 formattedSkin.put("geo", skinpackSkin.get("geometry").replace("geometry.humanoid.customSlim", "slim").replace("geometry.humanoid.custom", "classic"));
-                formattedSkin.put("name", skinpackSkin.get("localization_name"));
+                formattedSkin.put("name", getLanguageModules(languageFile).get(langPrefix + skinpackSkin.get("localization_name")));
 
                 for (String image : skinpackImages) {
                     if (new File(image).getName().equals(skinpackSkin.get("texture"))) {
@@ -298,6 +316,7 @@ public class SkinPackGen {
                 skinpackSkins.add(formattedSkin);
             }
 
+            fr.close();
             System.out.println(Arrays.toString(skinpackSkins.toArray()));
             return skinpackSkins;
 
